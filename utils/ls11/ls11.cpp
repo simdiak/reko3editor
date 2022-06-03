@@ -107,10 +107,14 @@ int read_int(char *buf)
     return *res_int;
 }
 
-int main()
+int main(int argc, char **argv)
 {
-    const char *filename = "Snr4d.r3.orig";
-    const char *new_filename = "Snr4d.r3.unzipped";
+    if (argc != 3) {
+        printf("Usage: %s <IN_FILE> <OUT_FILE>\n", argv[0]);
+        return -1;
+    }
+    const char *filename = argv[1];
+    const char *new_filename = argv[2];
     FILE *fp = fopen(filename, "rb");
     FILE *fw = fopen(new_filename, "wb");
     TLS11 a;

@@ -1,1 +1,1 @@
-export var base_url = 'http://localhost:8888';
+export var base_url = 'http://10.212.19.229:8888';
