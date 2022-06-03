@@ -110,7 +110,7 @@ def write_snr(n):
                         _code += bytes([eval('0x'+c)])
                 section['script_instr_bin'] = base64.b64encode(_code)
                 del section['script_code']
-    filename = 'new_snrd.data'
+    filename = f'{reko3_dir}/Snr{n}d.r3'
     rd.write_snrd(filename, snrd_data)
     # write snrm
     snrm_data = request.json['snrm']
@@ -122,7 +122,7 @@ def write_snr(n):
             for c in code_list.split(' '):
                 _code += bytes([eval('0x'+c)])
             item['txt_bin'] = base64.b64encode(_code)
-    filename = 'new_snrm.data'
+    filename = f'{reko3_dir}/Snr{n}m.r3'
     rd.write_snrm(filename, snrm_data)
     data = {
         'OK': 1
