@@ -35,7 +35,7 @@ class Reko3Data:
         self.bingzhong_list = self.init_data_bingzhong()
         self.celve_list = self.init_data_celve()
         self.daoju_list = self.init_data_daoju()
-        self.init_data_avatar_first()
+        self.avatar_first = self.init_data_avatar_first()
 
     def output(self, line):
         if self.debug:
@@ -64,6 +64,7 @@ class Reko3Data:
                     addr, common.hex_int(i), name, wuli, zhili, tongyu, unknown))
                 _avatar = {
                     'id_hex': '0x' + common.hex_int(i, 2),
+                    'addr': addr,
                     'name': name,
                     'wuli': wuli,
                     'zhili': zhili,
@@ -139,7 +140,6 @@ class Reko3Data:
                 except:
                     _i = len(_name)
                 name = _name[0:_i].decode('big5').replace(' ', '')
-                _daoju_list.append(name)
                 unknown = ''
                 for x in fp.read(3):
                     unknown += common.hex_int(x) + ' '
@@ -157,11 +157,19 @@ class Reko3Data:
                 }
                 _what = fp.read(1)
                 what = what_list[ord(_what)]
+                _daoju_list.append({
+                    'name': name,
+                    'effect_id': ord(_what),
+                    'effect': what,
+                    'xiaoguo': ord(_xiaoguo),
+                    'qiangdu': ord(_qiangdu),
+                })
                 self.output('%s %s-%-5s 作用：%s 效果：%s 强度：%s | %s' % (addr,
                             common.hex_int(i), name, what, xiaoguo, qiangdu, unknown))
         return _daoju_list
 
     def init_data_avatar_first(self):
+        _avatar_first = []
         with open(self.bakdata, 'rb') as fp:
             self.output('========人物初始属性========')
             fp.seek(0x3080)
@@ -169,19 +177,40 @@ class Reko3Data:
                 addr = hex(fp.tell())
                 name = self.get_avatar(i)['name']
                 x = fp.read(1)
-                juntuan = self.juntuan_map[ord(x)]
+                juntuan_id = ord(x)
+                juntuan = self.juntuan_map[juntuan_id]
                 fp.read(6)
                 x = fp.read(1)
-                bingzhong = self.bingzhong_list[ord(x)]
+                bingzhong_id = ord(x)
+                bingzhong = self.bingzhong_list[bingzhong_id]
                 level = ord(fp.read(1))
                 exp = ord(fp.read(1))
-                daoju = ''
+                daoju_str = ''
+                daoju_list = []
                 for x in fp.read(8):
                     if x != 0xFF:
-                        daoju += '%s(%s) ' % (
+                        daoju_str += '%s(%s) ' % (
                             self.daoju_list[x], common.hex_int(x))
+                        daoju_list.append({
+                            'id': x,
+                            'name': self.daoju_list[x],
+                        })
+                _avatar = {
+                    'id_hex': '0x' + common.hex_int(i, 2),
+                    'addr': addr,
+                    'name': name,
+                    'juntuan_id': juntuan_id,
+                    'juntuan': juntuan,
+                    'bingzhong_id': bingzhong_id,
+                    'bingzhong': bingzhong,
+                    'level': level,
+                    'exp': exp,
+                    'daoju_list': daoju_list,
+                }
+                _avatar_first.append(_avatar)
                 self.output('%s %s %s軍 %s 等级%d 经验%d 道具：%s' %
-                            (addr, name, juntuan, bingzhong, level, exp, daoju))
+                            (addr, name, juntuan, bingzhong, level, exp, daoju_str))
+        return _avatar_first
 
     def read_msave(self, msave_file):
         with open(msave_file, 'rb') as fp:

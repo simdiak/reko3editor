@@ -159,6 +159,12 @@ def load_avatar():
     return make_resp(jsonify(rd.avatar_list))
 
 
+@app.route('/load_avatar_first')
+def load_avatar_first():
+    rd = Reko3Data(reko3_dir, 0)
+    return make_resp(jsonify(rd.avatar_first))
+
+
 @app.route('/load_instr_index_code')
 def load_instr_index_code():
     rd = Reko3Data(reko3_dir, 0)

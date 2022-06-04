@@ -25,8 +25,8 @@
         </nav>
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="scenario-tab" data-bs-toggle="tab" data-bs-target="#scenario-div" type="button"
-                    role="tab" aria-controls="scenario" aria-selected="true">剧情编辑</button>
+                <button class="nav-link active" id="scenario-tab" data-bs-toggle="tab" data-bs-target="#scenario-div"
+                    type="button" role="tab" aria-controls="scenario" aria-selected="true">剧情编辑</button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="avatar-tab" data-bs-toggle="tab" data-bs-target="#avatar-div" type="button"
@@ -37,8 +37,8 @@
                     role="tab" aria-controls="daoju" aria-selected="false">道具</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="bingzhong-tab" data-bs-toggle="tab" data-bs-target="#bingzhong-div" type="button"
-                    role="tab" aria-controls="bingzhong" aria-selected="false">兵种</button>
+                <button class="nav-link" id="bingzhong-tab" data-bs-toggle="tab" data-bs-target="#bingzhong-div"
+                    type="button" role="tab" aria-controls="bingzhong" aria-selected="false">兵种</button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="celve-tab" data-bs-toggle="tab" data-bs-target="#celve-div" type="button"
@@ -80,7 +80,60 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="avatar-div" role="tabpanel" aria-labelledby="avatar-tab">
-                人物
+                <div class="row">
+                    <form class="row g-3">
+                        <div class="col-auto">
+                            <label>人物选择</label>
+                            <div class="avatar-list" onchange="load_avatar_info();"></div>
+                        </div>
+                    </form>
+                    <form class="row g-3">
+                        <div class="col-auto">
+                            <label>武力</label>
+                            <input class="avatar-wuli form-control">
+                        </div>
+                        <div class="col-auto">
+                            <label>智力</label>
+                            <input class="avatar-zhili form-control">
+                        </div>
+                        <div class="col-auto">
+                            <label>统御力</label>
+                            <input class="avatar-tongyu form-control">
+                        </div>
+                    </form>
+                    <form class="row g-3">
+                        <div class="col-auto avatar-juntuan">
+                            <label>初始所属军</label>
+                        </div>
+                        <div class="col-auto avatar-bingzhong">
+                            <label>初始兵种</label>
+                        </div>
+                        <div class="col-auto avatar-level">
+                            <label>初始等级</label>
+                        </div>
+                        <div class="col-auto">
+                            <label>初始经验</label>
+                            <input class="avatar-exp form-control">
+                        </div>
+                    </form>
+                    <form class="row g-3">
+                        <div class="col-auto">
+                            <label>初始道具</label>
+                        </div>
+                    </form>
+                    <form class="row g-3">
+                        <div class="col-auto avatar-daoju"></div>
+                        <div class="col-auto avatar-daoju"></div>
+                        <div class="col-auto avatar-daoju"></div>
+                        <div class="col-auto avatar-daoju"></div>
+                    </form>
+                    <form class="row g-3">
+                        <div class="col-auto avatar-daoju"></div>
+                        <div class="col-auto avatar-daoju"></div>
+                        <div class="col-auto avatar-daoju"></div>
+                        <div class="col-auto avatar-daoju"></div>
+                    </form>
+                </div>
             </div>
             <div class="tab-pane fade" id="daoju-div" role="tabpanel" aria-labelledby="daoju-tab">
                 道具
@@ -226,6 +279,11 @@
     function load_resource() {
         $.get('/load_avatar', {}, function (data) {
             avatar_list = data;
+            $.get('/load_avatar_first', {}, function (data) {
+                avatar_first = data;
+                init_avatar_list();
+                load_avatar_info();
+            });
         });
         $.get('/load_instr_index_code', {}, function (data) {
             instr_index_code_list = data;
@@ -239,7 +297,8 @@
         });
         $.get('/load_daoju', {}, function (data) {
             for (i in data)
-                daoju_options.push({ value: i, option: '0x' + hex(i) + ':' + data[i] });
+                daoju_options.push({ value: i, option: '0x' + hex(i) + ':' + data[i].name });
+                daoju_options.push({ value: 0xff, option: '0xff:无物品' });
         });
         $.get('/load_ai', {}, function (data) {
             for (i in data)
@@ -247,7 +306,7 @@
         });
         $.get('/load_juntuan', {}, function (data) {
             for (i in data)
-                juntuan_options.push({ value: Number(i) - 0x80, option: '0x' + hex(Number(i) - 0x80) + ':' + data[i] });
+                juntuan_options.push({ value: 0x80 - Number(i), option: '0x' + hex(0x80 - Number(i)) + ':' + data[i] });
         });
     }
     function load_snr() {
@@ -276,14 +335,14 @@
                 // 适用于snrm
                 $('#script_to_ret').val(value);
                 set_modal(field);
-                var myModal = new bootstrap.Modal(document.getElementById('ScriptsModal'), {keyboard: false});
+                var myModal = new bootstrap.Modal(document.getElementById('ScriptsModal'), { keyboard: false });
                 myModal.show();
             }
             if (field == 'instr_index_code') {
                 // 直接判断这个字段，snrd的指令组
                 $('#instr_index_to_ret').val(value);
                 set_modal(field);
-                var myModal = new bootstrap.Modal(document.getElementById('InstrIndexModal'), {keyboard: false});
+                var myModal = new bootstrap.Modal(document.getElementById('InstrIndexModal'), { keyboard: false });
                 myModal.show();
             }
             if (!isNaN(parseInt(field))) {
@@ -311,7 +370,7 @@
                     }
                     $('#script_to_ret').val(value);
                     set_modal(upper_field);
-                    var myModal = new bootstrap.Modal(document.getElementById('ScriptsModal'), {keyboard: false});
+                    var myModal = new bootstrap.Modal(document.getElementById('ScriptsModal'), { keyboard: false });
                     myModal.show();
                 }
             }
@@ -1332,7 +1391,8 @@
         load_resource();
         $('#sel_snr').val(0);
         load_snr();
-        $('#nav-scenario-tab').tab('show');
+        // $('#scenario-tab').tab('show');
+        $('#avatar-tab').tab('show');
     });
     function postjson(url, requestData, callback_succ) {
         if (!requestData)
@@ -1414,6 +1474,36 @@
         snrm_editor.set(snrm);
         snrm_editor.expandAll();
         enable_modifier();
+    }
+    function init_avatar_list() {
+        options = new Array();
+        for (i in avatar_list) {
+            option = { value: i, option: '0x' + hex(i) + ':' + avatar_list[i].name };
+            options.push(option);
+        }
+        $('#avatar-div .avatar-list').append(select_custom('avatar-div-list', options, 0));
+    }
+    function load_avatar_info() {
+        avatar_id = Number($('#avatar-div .select-avatar-div-list').val());
+        $('#avatar-div .avatar-wuli').val(avatar_list[avatar_id].wuli);
+        $('#avatar-div .avatar-zhili').val(avatar_list[avatar_id].zhili);
+        $('#avatar-div .avatar-tongyu').val(avatar_list[avatar_id].tongyu);
+        $('#avatar-div .avatar-juntuan .select-juntuan').remove();
+        $('#avatar-div .avatar-bingzhong .select-bingzhong').remove();
+        $('#avatar-div .avatar-level .select-level').remove();
+        a_juntuan_id = 256 - avatar_first[avatar_id].juntuan_id;
+        $('#avatar-div .avatar-juntuan').append(select_custom('juntuan', juntuan_options, a_juntuan_id));
+        $('#avatar-div .avatar-bingzhong').append(select_custom('bingzhong', bingzhong_options, avatar_first[avatar_id].bingzhong_id));
+        $('#avatar-div .avatar-level').append(select_custom('level', gen_number_options(100), avatar_first[avatar_id].level));
+        $('#avatar-div .avatar-exp').val(avatar_first[avatar_id].exp);
+        $('#avatar-div .avatar-daoju').empty();
+        [0, 1, 2, 3, 4, 5, 6, 7].map(function(i){
+            if (avatar_first[avatar_id].daoju_list[i])
+                _id = avatar_first[avatar_id].daoju_list[i].id;
+            else
+                _id = 0xff;
+            $('#avatar-div .avatar-daoju').eq(i).append(select_custom('daoju' + i, daoju_options, _id));
+        });
     }
 </script>
 
