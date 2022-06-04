@@ -1,1467 +1,1420 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>剧情编辑器</title>
+    <title>三国志英杰传 编辑器</title>
 
-    <link href="static/bootstrap.min.css" rel="stylesheet">
-    <script src="static/jquery.min.js"></script>
-    <script src="static/bootstrap.min.js"></script>
-    <link href="static/jsoneditor.min.css" rel="stylesheet">
-    <script src="static/jsoneditor.min.js"></script>
-  </head>
-  <body>
-  <div class="container-fluid">
-    <nav class="navbar navbar-default">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">剧情编辑器</a>
-        </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <form class="navbar-form navbar-left">
-          <div class="form-group">
-            <label>选择第</label>
-            </div>
-          <div class="form-group">
-            <select class="form-control" id="sel_snr">
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>章</label>
-            <button type="button" class="btn btn-primary btn-load" onclick="load_snr();">确定</button>
-            <button type="button" class="btn btn-primary btn-load" onclick="write_snr();">保存</button>
-            <span class="wait-tip">数据加载中。。。</span>
-            </div>
-          </form>
-        </div><!-- /.navbar-collapse -->
-      </div><!-- /.container-fluid -->
-    </nav>
-	<div class="row">
-	  <div class="col-md-6">
-		<h3>文本编辑</h3>
-		<div id="snrm_editor"></div>
-	  </div>
-	  <div class="col-md-6">
-		<h3>指令编辑</h3>
-		<div id="snrd_editor"></div>
-	  </div>
-	</div>
-  </div>
+    <link href="static/bootstrap.css" rel="stylesheet">
+    <script src="static/jquery.js"></script>
+    <script src="static/bootstrap.bundle.js"></script>
+    <link href="static/jsoneditor.css" rel="stylesheet">
+    <script src="static/jsoneditor.js"></script>
+</head>
 
-  <div id="InstrIndexModal" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">修改指令组</h4>
-        </div>
-        <div class="modal-body">
-          <label>代码</label>
-          <input id="instr_index_to_ret" class="form-control" readonly>
-          <div class="modal-param">
-            <div class="modal-param-instrcode">
+<body>
+    <div class="container-fluid">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">三国志英杰传 编辑器</a>
+                </div>
+            </div><!-- /.container-fluid -->
+        </nav>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="scenario-tab" data-bs-toggle="tab" data-bs-target="#scenario-div" type="button"
+                    role="tab" aria-controls="scenario" aria-selected="true">剧情编辑</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="avatar-tab" data-bs-toggle="tab" data-bs-target="#avatar-div" type="button"
+                    role="tab" aria-controls="avatar" aria-selected="false">人物</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="daoju-tab" data-bs-toggle="tab" data-bs-target="#daoju-div" type="button"
+                    role="tab" aria-controls="daoju" aria-selected="false">道具</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="bingzhong-tab" data-bs-toggle="tab" data-bs-target="#bingzhong-div" type="button"
+                    role="tab" aria-controls="bingzhong" aria-selected="false">兵种</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="celve-tab" data-bs-toggle="tab" data-bs-target="#celve-div" type="button"
+                    role="tab" aria-controls="celve" aria-selected="false">策略</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="scenario-div" role="tabpanel" aria-labelledby="scenario-tab">
+                <div class="row">
+                    <form class="row g-3">
+                        <div class="col-auto">
+                            <label for="staticEmail2">选择</label>
+                        </div>
+                        <div class="col-auto">
+                            <select class="form-control" id="sel_snr">
+                                <option value="0" selected>第0章</option>
+                                <option value="1">第1章</option>
+                                <option value="2">第2章</option>
+                                <option value="3">第3章</option>
+                                <option value="4">第4章</option>
+                            </select>
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-primary btn-load" onclick="load_snr();">确定</button>
+                            <button type="button" class="btn btn-primary btn-load" onclick="write_snr();">保存</button>
+                            <span class="wait-tip">数据加载中。。。</span>
+                        </div>
+                    </form>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3>文本编辑</h3>
+                        <div id="snrm_editor"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <h3>指令编辑</h3>
+                        <div id="snrd_editor"></div>
+                    </div>
+                </div>
             </div>
-            <div class="modal-param-instrsub">
+            <div class="tab-pane fade" id="avatar-div" role="tabpanel" aria-labelledby="avatar-tab">
+                人物
             </div>
-          </div>
+            <div class="tab-pane fade" id="daoju-div" role="tabpanel" aria-labelledby="daoju-tab">
+                道具
+            </div>
+            <div class="tab-pane fade" id="bingzhong-div" role="tabpanel" aria-labelledby="bingzhong-tab">
+                兵种
+            </div>
+            <div class="tab-pane fade" id="celve-div" role="tabpanel" aria-labelledby="celve-tab">
+                策略
+            </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="update_value($('#instr_index_to_ret').val());">确定</button>
-        </div>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
+    </div>
 
-  <div id="ScriptsModal" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">修改参数</h4>
-        </div>
-        <div class="modal-body">
-          <label>章</label>
-          <input id="page_id" class="form-control" readonly>
-          <label>代码</label>
-          <input id="script_to_ret" class="form-control">
-          <div class="modal-param">
-            <div class="modal-param-code">
-            </div>
-            <div class="modal-param-sub">
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="update_value($('#script_to_ret').val());">确定</button>
-        </div>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
+    <div id="InstrIndexModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">修改指令组</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label>代码</label>
+                    <input id="instr_index_to_ret" class="form-control" readonly>
+                    <div class="modal-param">
+                        <div class="modal-param-instrcode">
+                        </div>
+                        <div class="modal-param-instrsub">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        onclick="update_value($('#instr_index_to_ret').val());">确定</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
-  </body>
+    <div id="ScriptsModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">修改参数</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label>章</label>
+                    <input id="page_id" class="form-control" readonly>
+                    <label>代码</label>
+                    <input id="script_to_ret" class="form-control">
+                    <div class="modal-param">
+                        <div class="modal-param-code">
+                        </div>
+                        <div class="modal-param-sub">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        onclick="update_value($('#script_to_ret').val());">确定</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+</body>
 <script>
-var editable_fields_snrm = [
-    'name',
-    'code',
-    'txt',
-];
-var editable_fields_snrd = [
-    'instr_index_code',
-    'script_list',
-];
-function onEditable_snrm(obj) {
-    if(editable_fields_snrm.indexOf(obj.field) != -1)
-        return {field: false, value: true};
-    return false;
-}
-function onEditable_snrd(obj) {
-    if(editable_fields_snrd.indexOf(obj.field) != -1
-      || obj.path && obj.path.length == 7 && obj.path[5] == 'script_list')
-        return {field: false, value: true};
-    if(editable_fields_snrd.indexOf(obj.field) != -1
-      || obj.path && obj.path[5] == 'instr_index_code')
-        return {field: false, value: true};
-    return false;
-}
-function onNodeName_snrm(obj) {
-    if(obj.type == 'array' && obj.path.length == 0)
-        return '章列表';
-    else if(obj.type == 'object' && obj.path.length == 1)
-        return '章';
-    else if(obj.type == 'array' && obj.path.length == 2 && obj.path[1] == 'txt_list')
-        return '文本列表';
-    else if(obj.type == 'object' && obj.path.length == 3)
-        return '文本';
-    else
-        return '';
-}
-function onNodeName_snrd(obj) {
-    if(obj.type == 'array' && obj.path.length == 0)
-        return '章列表';
-    else if(obj.type == 'object' && obj.path.length == 1)
-        return '章';
-    else if(obj.type == 'array' && obj.path.length == 2 && obj.path[1] == 'paragraph_list')
-        return '节列表';
-    else if(obj.type == 'object' && obj.path.length == 3 && obj.path[1] == 'paragraph_list')
-        return '节';
-    else if(obj.type == 'array' && obj.path.length == 4 && obj.path[3] == 'section_list')
-        return '指令组列表';
-    else if(obj.type == 'object' && obj.path.length == 5 && obj.path[3] == 'section_list')
-        return '指令组';
-    else if(obj.type == 'array' && obj.path.length == 6 && obj.path[5] == 'script_list')
-        return '指令';
-}
-// 文本编辑
-const snrm_container = document.getElementById("snrm_editor")
-const snrm_options = {
-	'onEditable': onEditable_snrm,
-    'onNodeName': onNodeName_snrm,
-}
-const snrm_editor = new JSONEditor(snrm_container, snrm_options)
-// 指令编辑
-const snrd_container = document.getElementById("snrd_editor")
-const snrd_options = {
-	'onEditable': onEditable_snrd,
-    'onNodeName': onNodeName_snrd,
-}
-const snrd_editor = new JSONEditor(snrd_container, snrd_options)
+    var editable_fields_snrm = [
+        'name',
+        'code',
+        'txt',
+    ];
+    var editable_fields_snrd = [
+        'instr_index_code',
+        'script_list',
+    ];
+    function onEditable_snrm(obj) {
+        if (editable_fields_snrm.indexOf(obj.field) != -1)
+            return { field: false, value: true };
+        return false;
+    }
+    function onEditable_snrd(obj) {
+        if (editable_fields_snrd.indexOf(obj.field) != -1
+            || obj.path && obj.path.length == 7 && obj.path[5] == 'script_list')
+            return { field: false, value: true };
+        if (editable_fields_snrd.indexOf(obj.field) != -1
+            || obj.path && obj.path[5] == 'instr_index_code')
+            return { field: false, value: true };
+        return false;
+    }
+    function onNodeName_snrm(obj) {
+        if (obj.type == 'array' && obj.path.length == 0)
+            return '章列表';
+        else if (obj.type == 'object' && obj.path.length == 1)
+            return '章';
+        else if (obj.type == 'array' && obj.path.length == 2 && obj.path[1] == 'txt_list')
+            return '文本列表';
+        else if (obj.type == 'object' && obj.path.length == 3)
+            return '文本';
+        else
+            return '';
+    }
+    function onNodeName_snrd(obj) {
+        if (obj.type == 'array' && obj.path.length == 0)
+            return '章列表';
+        else if (obj.type == 'object' && obj.path.length == 1)
+            return '章';
+        else if (obj.type == 'array' && obj.path.length == 2 && obj.path[1] == 'paragraph_list')
+            return '节列表';
+        else if (obj.type == 'object' && obj.path.length == 3 && obj.path[1] == 'paragraph_list')
+            return '节';
+        else if (obj.type == 'array' && obj.path.length == 4 && obj.path[3] == 'section_list')
+            return '指令组列表';
+        else if (obj.type == 'object' && obj.path.length == 5 && obj.path[3] == 'section_list')
+            return '指令组';
+        else if (obj.type == 'array' && obj.path.length == 6 && obj.path[5] == 'script_list')
+            return '指令';
+    }
+    // 文本编辑
+    const snrm_container = document.getElementById("snrm_editor")
+    const snrm_options = {
+        'onEditable': onEditable_snrm,
+        'onNodeName': onNodeName_snrm,
+    }
+    const snrm_editor = new JSONEditor(snrm_container, snrm_options)
+    // 指令编辑
+    const snrd_container = document.getElementById("snrd_editor")
+    const snrd_options = {
+        'onEditable': onEditable_snrd,
+        'onNodeName': onNodeName_snrd,
+    }
+    const snrd_editor = new JSONEditor(snrd_container, snrd_options)
 
-var obj_cur_edit = null;
-$('.wait-tip').hide();
+    var obj_cur_edit = null;
+    $('.wait-tip').hide();
 
-var avatar_list = [];
-var script_code_list = [];
-var bingzhong_options = [];
-var daoju_options = [];
-var ai_options = [];
-var juntuan_options = [];
-function load_resource()
-{
-    $.get('/load_avatar', {}, function(data){
-        avatar_list = data;
-    });
-    $.get('/load_instr_index_code', {}, function(data){
-        instr_index_code_list = data;
-    });
-    $.get('/load_script_code', {}, function(data){
-        script_code_list = data;
-    });
-    $.get('/load_bingzhong', {}, function(data){
-        for(i in data)
-            bingzhong_options.push({value: i, option: '0x' + hex(i) + data[i]});
-    });
-    $.get('/load_daoju', {}, function(data){
-        for(i in data)
-            daoju_options.push({value: i, option: '0x' + hex(i) + data[i]});
-    });
-    $.get('/load_ai', {}, function(data){
-        for(i in data)
-            ai_options.push({value: i, option: '0x' + hex(i) + ':' + data[i]});
-    });
-    $.get('/load_juntuan', {}, function(data){
-        for(i in data)
-            juntuan_options.push({value: Number(i)-0x80, option: '0x' + hex(Number(i)-0x80) + ':' + data[i]});
-    });
-}
-function load_snr()
-{
-    $('.wait-tip').show();
-    $('.btn-load').hide();
-    var n = $('#sel_snr').val();
-    $.get('/load_snrm/' + n, {}, function(data){
-        snrm_editor.set(data)
-        relocate_snrm();
-    });
-    $.get('/load_snrd/' + n, {}, function(data){
-        snrd_editor.set(data)
-        snrd_editor.expandAll();
-        $('.wait-tip').hide();
-        $('.btn-load').show();
-        enable_modifier();
-    });
-}
-function enable_modifier()
-{
-    // 自定义点击值的事件
-    $('.jsoneditor-value').unbind().on('click', function(){
-        obj_cur_edit = $(this);
-        var field = $(obj_cur_edit).parents().prev().prev().children()[0].innerText;
-        var value = obj_cur_edit[0].innerText;
-        if(editable_fields_snrm.indexOf(field) != -1)
-        {
-            // 适用于snrm
-            $('#script_to_ret').val(value);
-            set_modal(field);
-            $('#ScriptsModal').modal();
-        }
-        if(field == 'instr_index_code')
-        {
-            // 直接判断这个字段，snrd的指令组
-            $('#instr_index_to_ret').val(value);
-            set_modal(field);
-            $('#InstrIndexModal').modal();
-        }
-        if(!isNaN(parseInt(field)))
-        {
-            // 是个number，属于snrd，找找上层字段
-            var upper_level = $(obj_cur_edit)
-                .parents().parents().parents().parents().parents().parents();
-            var upper_obj = upper_level;
-            while(!upper_obj.hasClass('jsoneditor-expandable'))
-                upper_obj = upper_obj.prev();
-            var upper_field = upper_obj.children().eq(2).children().eq(0)
-                .children().eq(0).children().eq(0)
-                .children().eq(1).children().eq(0)[0].innerText;
-            if(upper_field == 'script_list')
-            {
-                // 再找找page字段
-                var page_id = -1;
-                for(var i = 0; i < 4; i++)
-                {
-                    upper_obj = upper_obj.prev();
-                    var page_obj = upper_obj.children().eq(2).children().eq(0)
-                        .children().eq(0).children().eq(0);
-                    if(page_obj.children().eq(1).children().eq(0)[0].innerText == 'page')
-                    {
-                        page_id = Number(page_obj.children().eq(3).children().eq(0)[0].innerText);
-                        $('#page_id').val(page_id);
-                        break;
-                    }
-                }
+    var avatar_list = [];
+    var script_code_list = [];
+    var bingzhong_options = [];
+    var daoju_options = [];
+    var ai_options = [];
+    var juntuan_options = [];
+    function load_resource() {
+        $.get('/load_avatar', {}, function (data) {
+            avatar_list = data;
+        });
+        $.get('/load_instr_index_code', {}, function (data) {
+            instr_index_code_list = data;
+        });
+        $.get('/load_script_code', {}, function (data) {
+            script_code_list = data;
+        });
+        $.get('/load_bingzhong', {}, function (data) {
+            for (i in data)
+                bingzhong_options.push({ value: i, option: '0x' + hex(i) + ':' + data[i] });
+        });
+        $.get('/load_daoju', {}, function (data) {
+            for (i in data)
+                daoju_options.push({ value: i, option: '0x' + hex(i) + ':' + data[i] });
+        });
+        $.get('/load_ai', {}, function (data) {
+            for (i in data)
+                ai_options.push({ value: i, option: '0x' + hex(i) + ':' + data[i] });
+        });
+        $.get('/load_juntuan', {}, function (data) {
+            for (i in data)
+                juntuan_options.push({ value: Number(i) - 0x80, option: '0x' + hex(Number(i) - 0x80) + ':' + data[i] });
+        });
+    }
+    function load_snr() {
+        $('.wait-tip').show();
+        $('.btn-load').hide();
+        var n = $('#sel_snr').val();
+        $.get('/load_snrm/' + n, {}, function (data) {
+            snrm_editor.set(data)
+            relocate_snrm();
+        });
+        $.get('/load_snrd/' + n, {}, function (data) {
+            snrd_editor.set(data)
+            snrd_editor.expandAll();
+            $('.wait-tip').hide();
+            $('.btn-load').show();
+            enable_modifier();
+        });
+    }
+    function enable_modifier() {
+        // 自定义点击值的事件
+        $('.jsoneditor-value').unbind().on('click', function () {
+            obj_cur_edit = $(this);
+            var field = $(obj_cur_edit).parents().prev().prev().children()[0].innerText;
+            var value = obj_cur_edit[0].innerText;
+            if (editable_fields_snrm.indexOf(field) != -1) {
+                // 适用于snrm
                 $('#script_to_ret').val(value);
-                set_modal(upper_field);
-                $('#ScriptsModal').modal();
+                set_modal(field);
+                var myModal = new bootstrap.Modal(document.getElementById('ScriptsModal'), {keyboard: false});
+                myModal.show();
             }
+            if (field == 'instr_index_code') {
+                // 直接判断这个字段，snrd的指令组
+                $('#instr_index_to_ret').val(value);
+                set_modal(field);
+                var myModal = new bootstrap.Modal(document.getElementById('InstrIndexModal'), {keyboard: false});
+                myModal.show();
+            }
+            if (!isNaN(parseInt(field))) {
+                // 是个number，属于snrd，找找上层字段
+                var upper_level = $(obj_cur_edit)
+                    .parents().parents().parents().parents().parents().parents();
+                var upper_obj = upper_level;
+                while (!upper_obj.hasClass('jsoneditor-expandable'))
+                    upper_obj = upper_obj.prev();
+                var upper_field = upper_obj.children().eq(2).children().eq(0)
+                    .children().eq(0).children().eq(0)
+                    .children().eq(1).children().eq(0)[0].innerText;
+                if (upper_field == 'script_list') {
+                    // 再找找page字段
+                    var page_id = -1;
+                    for (var i = 0; i < 4; i++) {
+                        upper_obj = upper_obj.prev();
+                        var page_obj = upper_obj.children().eq(2).children().eq(0)
+                            .children().eq(0).children().eq(0);
+                        if (page_obj.children().eq(1).children().eq(0)[0].innerText == 'page') {
+                            page_id = Number(page_obj.children().eq(3).children().eq(0)[0].innerText);
+                            $('#page_id').val(page_id);
+                            break;
+                        }
+                    }
+                    $('#script_to_ret').val(value);
+                    set_modal(upper_field);
+                    var myModal = new bootstrap.Modal(document.getElementById('ScriptsModal'), {keyboard: false});
+                    myModal.show();
+                }
+            }
+        });
+    }
+    function select_custom(name, options, def_value) {
+        var dom = '<select class="form-control select-' + name + '">';
+        for (i in options) {
+            var value = options[i].value;
+            var option = options[i].option;
+            var is_selected = (value == def_value) ? ' selected' : '';
+            dom += '<option value="' + value + '"' + is_selected + '>' + option + '</option>';
         }
-    });
-}
-function select_custom(name, options, def_value)
-{
-    var dom = '<select class="form-control select-' + name + '">';
-    for(i in options)
-    {
-        var value = options[i].value;
-        var option = options[i].option;
-        var is_selected = (value == def_value) ? ' selected' : '';
-        dom += '<option value="' + value + '"' + is_selected + '>' + option + '</option>';
+        dom += '</select>';
+        return $(dom);
     }
-    dom += '</select>';
-    return $(dom);
-}
-function select_avatar(id, cur_avatar_name)
-{
-    var options = [];
-    var cur_avatar_id = -1;
-    if(RegExp(/\d+/).test(cur_avatar_name))
-        cur_avatar_id = cur_avatar_name;
-    for(i in avatar_list)
-    {
-        option = {value: i, option: '0x' + hex(i) + ':' + avatar_list[i].name};
-        options.push(option);
-        if(avatar_list[i].name == cur_avatar_name)
-            cur_avatar_id = i;
-    }
-    options.push({value: 0x0400, option: '0x0400:自选'});
-    options.push({value: 0xffff, option: '0xffff:未指定'});
-    class_name = 'avatar-' + id;
-    return select_custom(class_name, options, cur_avatar_id);
-}
-function dec(i)
-{
-    // 十六进制转十进制
-    return parseInt('0x' + i, 16);
-}
-function hex(i)
-{
-    // 整数转成十六进制字符串并补0
-    var hex_i = Number(i).toString(16);
-    if(hex_i.length % 2 == 1)
-        hex_i = '0' + hex_i;
-    return hex_i;
-}
-function hex_code(hex_i, size, reverse)
-{
-    // 十六进制字符串改代码形式 '123' -> '01 23'
-    // size为转换后应有的字节数
-    // 如reverse=1，'123' -> '23 01'
-    if(hex_i.length % 2 == 1)
-        hex_i = '0' + hex_i;
-    _res = hex_i.replace(/[0-9a-z]{2}/g, '$& ');
-    _res_arr = _res.split(' ');
-    _res_arr.pop();
-    while(_res_arr.length < size)
-        _res_arr.splice(0, 0, '00')
-    if(reverse == 1)
-        _res_arr.reverse()
-    return _res_arr.join(' ')
-}
-function code_hex(code, reverse)
-{
-    //十六进制代码转字符串
-    //如reverse=0，'01 23' -> '123'
-    //如reverse=1，'01 23' -> '2301'
-    _res_arr = code.split(' ');
-    if(reverse == 1)
-        _res_arr.reverse();
-    _res = _res_arr.join('');
-    return _res == '00' ? _res : _res.replace(/^0+/g, '');
-}
-function select_instr_index_code()
-{
-    var cur_select = '0x' + $('#instr_index_to_ret').val().split(' ')[0];
-    var dom = '<select class="form-control select-instr-index-code">';
-    var keys = Object.keys(instr_index_code_list);
-    dom += '<option value="0">== 选择指令组 ==</option>';
-    for(var i = 0; i < keys.length; i++)
-    {
-        var instr_index_code_id = '0x' + hex(keys[i]);
-        var is_selected = (instr_index_code_id == cur_select) ? ' selected' : '';
-        var instr_index_code_name = instr_index_code_id + ':' + instr_index_code_list[keys[i]];
-        dom += '<option value="' + instr_index_code_id + '"' + is_selected + '>' + instr_index_code_name + '</option>';
-    }
-    dom += '</select>';
-    return $(dom);
-}
-function select_script_code()
-{
-    var cur_select = '0x' + $('#script_to_ret').val().split(' ')[0];
-    var dom = '<select class="form-control select-script-code">';
-    var keys = Object.keys(script_code_list);
-    dom += '<option value="0">== 选择指令 ==</option>';
-    for(var i = 0; i < keys.length; i++)
-    {
-        var script_code_id = '0x' + hex(keys[i]);
-        var is_selected = (script_code_id == cur_select) ? ' selected' : '';
-        var script_code_name = script_code_id + ':' + script_code_list[keys[i]].descr;
-        dom += '<option value="' + script_code_id + '"' + is_selected + '>' + script_code_name + '</option>';
-    }
-    dom += '</select>';
-    return $(dom);
-}
-function gen_number_options(n)
-{
-    var options = [];
-    for(var i = 0; i < n; i++)
-    {
-        if(i <= 300 || i % 100 == 0)
-            options.push({value: i, option: '0x' + hex(i) + ':' + i});
-    }
-    return options;
-}
-function select_friend_army()
-{
-    var army_arr = $('#script_to_ret').val().split(' ');
-    var _code = army_arr[0];
-    function refresh_value() {
-        var setting_list = [];
-        setting_list.push(hex($('.modal-param-sub').find('.select-no-retreat').val()));
-        setting_list.push(hex($('.modal-param-sub').find('.select-round-cnt').val()));
-        setting_list.push(hex($('.modal-param-sub').find('.select-round-inherit').val()));
-        setting_list.push('00', '00');
-        setting_list.push(hex_code(hex($('.modal-param-sub').find('.select-avatar-opp-main').val()), 2, 1));
-        setting_list.push('00', '00');
-        setting_list.push(hex_code(hex($('.modal-param-sub').find('.select-avatar-my-main').val()), 2, 1));
-        var army_list = [];
-        for(var i = 0; i < 30; i++)
-        {
-            var item = $('.modal-param-sub').find('.avatar').eq(i);
-            var army_code = [];
-            army_code.push(hex_code(hex(item.find('.select-avatar-'+i).val()), 2, 1));
-            army_code.push(hex(item.find('.select-x').val()));
-            army_code.push(hex(item.find('.select-y').val()));
-            army_code.push('01');
-            army_code.push(hex(item.find('.select-appear').val()));
-            army_code.push(hex(item.find('.select-event').val()));
-            army_code.push(hex(item.find('.select-direction').val()));
-            army_code.push(hex(item.find('.select-fubing').val()));
-            army_list.push(army_code.join(' '));
+    function select_avatar(id, cur_avatar_name) {
+        var options = [];
+        var cur_avatar_id = -1;
+        if (RegExp(/\d+/).test(cur_avatar_name))
+            cur_avatar_id = cur_avatar_name;
+        for (i in avatar_list) {
+            option = { value: i, option: '0x' + hex(i) + ':' + avatar_list[i].name };
+            options.push(option);
+            if (avatar_list[i].name == cur_avatar_name)
+                cur_avatar_id = i;
         }
-        $('#script_to_ret').val(_code + ' ' + setting_list.join(' ') + ' ' + army_list.join(' '));
+        options.push({ value: 0x0400, option: '0x0400:自选' });
+        options.push({ value: 0xffff, option: '0xffff:未指定' });
+        class_name = 'avatar-' + id;
+        return select_custom(class_name, options, cur_avatar_id);
     }
-    var army_arr = $('#script_to_ret').val().split(' ');
-    $('.modal-param-sub').append('<label>战斗设置</label>');
-    var settings = $('<form class="form-inline"><div class="form-group settings"></div></form>');
-    settings.find('.settings').append('<label>不可撤退</label>');
-    settings.find('.settings').append(select_custom('no-retreat', gen_number_options(2), dec(army_arr[1])));
-    settings.find('.settings').append('<label>回合数</label>');
-    settings.find('.settings').append(select_custom('round-cnt', gen_number_options(100), dec(army_arr[2])));
-    settings.find('.settings').append('<label>继承回合数</label>');
-    settings.find('.settings').append(select_custom('round-inherit', gen_number_options(2), dec(army_arr[3])));
-    var avatar_id_hex = code_hex([army_arr[6], army_arr[7]].join(' '), 1).replace(' ', '');
-    var avatar_id = dec(avatar_id_hex);
-    settings.find('.settings').append('<label>敌方主将</label>');
-    settings.find('.settings').append(select_avatar('opp-main', avatar_id));
-    var avatar_id_hex = code_hex([army_arr[10], army_arr[11]].join(' '), 1).replace(' ', '');
-    var avatar_id = dec(avatar_id_hex);
-    settings.find('.settings').append('<label>我方主将</label>');
-    settings.find('.settings').append(select_avatar('my-main', avatar_id));
-    settings.find('.settings').find('.form-control').addClass('input-sm');
-    $('.modal-param-sub').append(settings);
-    army_arr.splice(0, 12);
-    $('.modal-param-sub').append('<label>部署设置</label>');
-    var appear_options = [];
-    appear_options.push({value: 0, option: '直接'});
-    appear_options.push({value: 1, option: '事件'});
-    for(var i = 0; i < 30; i++)
-    {
-        var s = i * 9;
-        var avatar_id_hex = code_hex([army_arr[s], army_arr[s+1]].join(' '), 1).replace(' ', '');
+    function dec(i) {
+        // 十六进制转十进制
+        return parseInt('0x' + i, 16);
+    }
+    function hex(i) {
+        // 整数转成十六进制字符串并补0
+        var hex_i = Number(i).toString(16);
+        if (hex_i.length % 2 == 1)
+            hex_i = '0' + hex_i;
+        return hex_i;
+    }
+    function hex_code(hex_i, size, reverse) {
+        // 十六进制字符串改代码形式 '123' -> '01 23'
+        // size为转换后应有的字节数
+        // 如reverse=1，'123' -> '23 01'
+        if (hex_i.length % 2 == 1)
+            hex_i = '0' + hex_i;
+        _res = hex_i.replace(/[0-9a-z]{2}/g, '$& ');
+        _res_arr = _res.split(' ');
+        _res_arr.pop();
+        while (_res_arr.length < size)
+            _res_arr.splice(0, 0, '00')
+        if (reverse == 1)
+            _res_arr.reverse()
+        return _res_arr.join(' ')
+    }
+    function code_hex(code, reverse) {
+        //十六进制代码转字符串
+        //如reverse=0，'01 23' -> '123'
+        //如reverse=1，'01 23' -> '2301'
+        _res_arr = code.split(' ');
+        if (reverse == 1)
+            _res_arr.reverse();
+        _res = _res_arr.join('');
+        return _res == '00' ? _res : _res.replace(/^0+/g, '');
+    }
+    function select_instr_index_code() {
+        var cur_select = '0x' + $('#instr_index_to_ret').val().split(' ')[0];
+        var dom = '<select class="form-control select-instr-index-code">';
+        var keys = Object.keys(instr_index_code_list);
+        dom += '<option value="0">== 选择指令组 ==</option>';
+        for (var i = 0; i < keys.length; i++) {
+            var instr_index_code_id = '0x' + hex(keys[i]);
+            var is_selected = (instr_index_code_id == cur_select) ? ' selected' : '';
+            var instr_index_code_name = instr_index_code_id + ':' + instr_index_code_list[keys[i]];
+            dom += '<option value="' + instr_index_code_id + '"' + is_selected + '>' + instr_index_code_name + '</option>';
+        }
+        dom += '</select>';
+        return $(dom);
+    }
+    function select_script_code() {
+        var cur_select = '0x' + $('#script_to_ret').val().split(' ')[0];
+        var dom = '<select class="form-control select-script-code">';
+        var keys = Object.keys(script_code_list);
+        dom += '<option value="0">== 选择指令 ==</option>';
+        for (var i = 0; i < keys.length; i++) {
+            var script_code_id = '0x' + hex(keys[i]);
+            var is_selected = (script_code_id == cur_select) ? ' selected' : '';
+            var script_code_name = script_code_id + ':' + script_code_list[keys[i]].descr;
+            dom += '<option value="' + script_code_id + '"' + is_selected + '>' + script_code_name + '</option>';
+        }
+        dom += '</select>';
+        return $(dom);
+    }
+    function gen_number_options(n) {
+        var options = [];
+        for (var i = 0; i < n; i++) {
+            if (i <= 300 || i % 100 == 0)
+                options.push({ value: i, option: '0x' + hex(i) + ':' + i });
+        }
+        return options;
+    }
+    function select_friend_army() {
+        var army_arr = $('#script_to_ret').val().split(' ');
+        var _code = army_arr[0];
+        function refresh_value() {
+            var setting_list = [];
+            setting_list.push(hex($('.modal-param-sub').find('.select-no-retreat').val()));
+            setting_list.push(hex($('.modal-param-sub').find('.select-round-cnt').val()));
+            setting_list.push(hex($('.modal-param-sub').find('.select-round-inherit').val()));
+            setting_list.push('00', '00');
+            setting_list.push(hex_code(hex($('.modal-param-sub').find('.select-avatar-opp-main').val()), 2, 1));
+            setting_list.push('00', '00');
+            setting_list.push(hex_code(hex($('.modal-param-sub').find('.select-avatar-my-main').val()), 2, 1));
+            var army_list = [];
+            for (var i = 0; i < 30; i++) {
+                var item = $('.modal-param-sub').find('.avatar').eq(i);
+                var army_code = [];
+                army_code.push(hex_code(hex(item.find('.select-avatar-' + i).val()), 2, 1));
+                army_code.push(hex(item.find('.select-x').val()));
+                army_code.push(hex(item.find('.select-y').val()));
+                army_code.push('01');
+                army_code.push(hex(item.find('.select-appear').val()));
+                army_code.push(hex(item.find('.select-event').val()));
+                army_code.push(hex(item.find('.select-direction').val()));
+                army_code.push(hex(item.find('.select-fubing').val()));
+                army_list.push(army_code.join(' '));
+            }
+            $('#script_to_ret').val(_code + ' ' + setting_list.join(' ') + ' ' + army_list.join(' '));
+        }
+        var army_arr = $('#script_to_ret').val().split(' ');
+        $('.modal-param-sub').append('<h5>战斗设置</h5>');
+        var settings = $('<form><div class="settings row row-cols-lg-auto g-3 align-items-center"></div></form>');
+        settings.find('.settings').append('<div class="col-12"></div>');
+        settings.find('.settings .col-12').eq(-1).append('<label>不可撤退</label>');
+        settings.find('.settings .col-12').eq(-1).append(select_custom('no-retreat', gen_number_options(2), dec(army_arr[1])));
+        settings.find('.settings').append('<div class="col-12"></div>');
+        settings.find('.settings .col-12').eq(-1).append('<label>回合数</label>');
+        settings.find('.settings .col-12').eq(-1).append(select_custom('round-cnt', gen_number_options(100), dec(army_arr[2])));
+        settings.find('.settings').append('<div class="col-12"></div>');
+        settings.find('.settings .col-12').eq(-1).append('<label>继承回合数</label>');
+        settings.find('.settings .col-12').eq(-1).append(select_custom('round-inherit', gen_number_options(2), dec(army_arr[3])));
+        var avatar_id_hex = code_hex([army_arr[6], army_arr[7]].join(' '), 1).replace(' ', '');
         var avatar_id = dec(avatar_id_hex);
-        var army = $('<form class="form-inline"><div class="form-group avatar"></div></form>');
-        army.find('.avatar').append('<label>角色' + (i+1) + '</label>');
-        army.find('.avatar').append(select_avatar(i, avatar_id));
-        army.find('.avatar').append('<label>X</label>');
-        army.find('.avatar').append(select_custom('x', gen_number_options(100), dec(army_arr[s+2])));
-        army.find('.avatar').append('<label>Y</label>');
-        army.find('.avatar').append(select_custom('y', gen_number_options(100), dec(army_arr[s+3])));
-        army.find('.avatar').append('<label>出场</label>');
-        army.find('.avatar').append(select_custom('appear', appear_options, dec(army_arr[s+5])));
-        army.find('.avatar').append('<label>事件</label>');
-        army.find('.avatar').append(select_custom('event', gen_number_options(256), dec(army_arr[s+6])));
-        army.find('.avatar').append('<label>朝向</label>');
-        army.find('.avatar').append(select_custom('direction', gen_number_options(4), dec(army_arr[s+7])));
-        army.find('.avatar').append('<label>伏兵</label>');
-        army.find('.avatar').append(select_custom('fubing', gen_number_options(2), dec(army_arr[s+8])));
-        army.find('.avatar').find('.form-control').addClass('input-sm');
-        $('.modal-param-sub').append(army);
-    }
-    $('.modal-param-sub').find('.form-control').on('change', refresh_value);
-}
-function select_opp_army()
-{
-    var army_arr = $('#script_to_ret').val().split(' ');
-    var _code = army_arr[0];
-    army_arr.splice(0, 2);
-    $('.modal-param-sub').append('<label>部署设置</label>');
-    var appear_options = [];
-    appear_options.push({value: 0, option: '直接'});
-    appear_options.push({value: 1, option: '事件'});
-    function ai_type_target(ai_type, x, y)
-    {
-        var dom = $('<span></span>');
-        if([4, 6].indexOf(ai_type) != -1)
-        {
-            dom.append($('<label>目标X</label>'));
-            dom.append(select_custom('ai-target-x', gen_number_options(100), x));
-            dom.append($('<label>目标Y</label>'));
-            dom.append(select_custom('ai-target-y', gen_number_options(100), y));
-        }
-        else if([3, 5].indexOf(ai_type) != -1)
-        {
-            dom.append($('<label>仇人</label>'));
-            var avatar_id = dec(code_hex(hex(y) + ' ' + hex(x)));
-            dom.append(select_avatar('ai-target-avatar', avatar_id));
-        }
-        $(dom).find('.form-control').addClass('input-sm');
-        return dom;
-    }
-    function refresh_value() {
-        var army_list = [];
-        for(var i = 0; i < 30; i++)
-        {
-            var item = $('.modal-param-sub').find('.avatar').eq(i);
-            var army_code = [];
-            army_code.push(hex_code(hex(item.find('.select-avatar-'+i).val()), 2, 1));
-            army_code.push(hex(item.find('.select-x').val()));
-            army_code.push(hex(item.find('.select-y').val()));
-            army_code.push(hex(item.find('.select-appear').val()));
-            army_code.push(hex(item.find('.select-event').val()));
-            army_code.push(hex(item.find('.select-direction').val()));
-            army_code.push(hex(item.find('.select-fubing').val()));
-            army_code.push(hex(item.find('.select-ai-type').val()));
-            if(item.find('.select-ai-target-x').length > 0)
-            {
-                army_code.push(hex(item.find('.select-ai-target-x').val()));
-                army_code.push(hex(item.find('.select-ai-target-y').val()));
-            }
-            else if(item.find('.select-avatar-ai-target-avatar').length > 0)
-                army_code.push(hex_code(hex(item.find('.select-avatar-ai-target-avatar').val()), 2, 1));
-            else
-                army_code.push('00', '00');
-            army_code.push(hex(item.find('.select-bingzhong').val()));
-            army_code.push(hex(item.find('.select-level').val()));
-            army_list.push(army_code.join(' '));
-        }
-        $('#script_to_ret').val(_code + ' 00 ' + army_list.join(' '));
-    }
-    for(var i = 0; i < 30; i++)
-    {
-        var s = i * 13;
-        var avatar_id_hex = code_hex([army_arr[s], army_arr[s+1]].join(' '), 1).replace(' ', '');
+        settings.find('.settings').append('<div class="col-12"></div>');
+        settings.find('.settings .col-12').eq(-1).append('<label>敌方主将</label>');
+        settings.find('.settings .col-12').eq(-1).append(select_avatar('opp-main', avatar_id));
+        var avatar_id_hex = code_hex([army_arr[10], army_arr[11]].join(' '), 1).replace(' ', '');
         var avatar_id = dec(avatar_id_hex);
-        var army = $('<form class="form-inline"><div class="form-group avatar"></div></form>');
-        army.find('.avatar').append('<label>角色' + (i+1) + '</label>');
-        army.find('.avatar').append(select_avatar(i, avatar_id));
-        army.find('.avatar').append('<label>兵种</label>');
-        army.find('.avatar').append(select_custom('bingzhong', bingzhong_options, dec(army_arr[s+11])));
-        army.find('.avatar').append('<label>等级</label>');
-        army.find('.avatar').append(select_custom('level', gen_number_options(100), dec(army_arr[s+12])));
-        army.find('.avatar').append('<label>X</label>');
-        army.find('.avatar').append(select_custom('x', gen_number_options(100), dec(army_arr[s+2])));
-        army.find('.avatar').append('<label>Y</label>');
-        army.find('.avatar').append(select_custom('y', gen_number_options(100), dec(army_arr[s+3])));
-        army.find('.avatar').append('<label>出场</label>');
-        army.find('.avatar').append(select_custom('appear', appear_options, dec(army_arr[s+4])));
-        army.find('.avatar').append('<label>事件</label>');
-        army.find('.avatar').append(select_custom('event', gen_number_options(256), dec(army_arr[s+5])));
-        army.find('.avatar').append('<label>朝向</label>');
-        army.find('.avatar').append(select_custom('direction', gen_number_options(4), dec(army_arr[s+6])));
-        army.find('.avatar').append('<label>伏兵</label>');
-        army.find('.avatar').append(select_custom('fubing', gen_number_options(2), dec(army_arr[s+7])));
-        army.find('.avatar').append('<label>AI</label>');
-        var ai_type = dec(army_arr[s+8]);
-        var ai_x = dec(army_arr[s+9]);
-        var ai_y = dec(army_arr[s+10]);
-        army.find('.avatar').append(select_custom('ai-type', ai_options, ai_type));
-        army.find('.avatar').append(ai_type_target(ai_type, ai_x, ai_y));
-        army.find('.avatar').find('.select-ai-type').unbind().on('change', function(){
-            $(this).next().remove();
-            var ai_type = $(this).val();
-            var new_ai_target = ai_type_target(Number(ai_type), 0, 0);
-            $(new_ai_target).find('.form-control').on('change', refresh_value);
-            $(new_ai_target).insertAfter($(this));
-        });
-        army.find('.avatar').find('.form-control').addClass('input-sm');
-        $('.modal-param-sub').append(army);
-        army.find('.avatar').find('.form-control').on('change', refresh_value);
-    }
-}
-function check_events(cur_code_arr)
-{
-    var _code = cur_code_arr[0];
-    function refresh_value() {
-        // 跳过指令数
-        var jump_code = hex($('.modal-param-sub').find('.select-jump').val());
-        // 统计已触发数量
-        var yes_objs = trigger_yes.find('.trigger-yes').find('.form-control');
-        var yes_cnt = hex(yes_objs.length);
-        var yes_list = '';
-        for(var i = 0; i < yes_objs.length; i++)
-            yes_list += hex(yes_objs.eq(i).val().replace('0x', '')) + ' ';
-        // 统计未触发数量
-        var no_objs = trigger_no.find('.trigger-no').find('.form-control');
-        var no_cnt = hex(no_objs.length);
-        var no_list = '';
-        for(var i = 0; i < no_objs.length; i++)
-            no_list += hex(no_objs.eq(i).val().replace('0x', '')) + ' ';
-        $('#script_to_ret').val(_code + ' ' + jump_code + ' ' + yes_cnt + ' ' + yes_list + no_cnt + ' ' + no_list);
-    }
-    function delete_select(obj) {
-        // 删除select框并刷新
-        $(obj).prev().remove();
-        $(obj).next().remove();
-        $(obj).remove();
-        refresh_value();
-    }
-    $('.modal-param-sub').append('<label>检查通过后跳过的指令数</label>');
-    $('.modal-param-sub').append(select_custom('jump', gen_number_options(100), dec(cur_code_arr[1])));
-    // 开始处理已触发事件
-    var trigger_yes = $('<form class="form-inline"><div class="form-group trigger-yes"></div></form>');
-    var trigger_yes_cnt = dec(cur_code_arr[2]);
-    trigger_yes.find('.trigger-yes').append('<label>已触发事件</label>');
-    trigger_yes.find('.trigger-yes').append('<button type="button" class="btn btn-success btn-xs">+</button>');
-    trigger_yes.find('.trigger-yes').append('<br>');
-    // 根据原指令放置已触发事件
-    for(var i = 0; i < trigger_yes_cnt; i++)
-    {
-        trigger_yes.find('.trigger-yes').append(select_custom('yes-' + i, gen_number_options(256), dec(cur_code_arr[3+i])));
-        // 修改select框触发更新
-        trigger_yes.find('.trigger-yes').find('.select-yes-' + i).unbind().on('change', refresh_value);
-        trigger_yes.find('.trigger-yes').append('<button type="button" class="btn btn-danger btn-xs">-</button>');
-        trigger_yes.find('.trigger-yes').find('.btn-danger').unbind().on('click', function(){
-            delete_select($(this));
-        });
-        trigger_yes.find('.trigger-yes').append('<br>');
-    }
-    // 点击+按钮新增事件
-    trigger_yes.find('.trigger-yes').find('.btn-success').unbind().on('click', function(){
-        if(trigger_yes.find('.trigger-yes').find('.form-control').length == 0)
-            last_i = 0;
-        else
-            last_i = Number(trigger_yes.find('.trigger-yes').find('.form-control').last().attr('class').split('-').pop()) + 1;
-        trigger_yes.find('.trigger-yes').append(select_custom('yes-' + last_i, gen_number_options(256), 0));
-        trigger_yes.find('.trigger-yes').append('<button type="button" class="btn btn-danger btn-xs">-</button>');
-        trigger_yes.find('.trigger-yes').find('.form-control').unbind().on('change', refresh_value);
-        // 点击-按钮删除事件
-        trigger_yes.find('.trigger-yes').find('.btn-danger').unbind().on('click', function(){
-            delete_select($(this));
-        });
-        trigger_yes.find('.trigger-yes').append('<br>');
-        refresh_value();
-    });
-    $('.modal-param-sub').append(trigger_yes);
-    // 开始处理未触发事件
-    var trigger_no = $('<form class="form-inline"><div class="form-group trigger-no"></div></form>');
-    var trigger_no_cnt = dec(cur_code_arr[3+trigger_yes_cnt]);
-    trigger_no.find('.trigger-no').append('<label>未触发事件</label>');
-    trigger_no.find('.trigger-no').append('<button type="button" class="btn btn-success btn-xs">+</button>');
-    trigger_no.find('.trigger-no').append('<br>');
-    // 根据原指令放置未触发事件
-    for(var i = 0; i < trigger_no_cnt; i++)
-    {
-        trigger_no.find('.trigger-no').append(select_custom('no-' + i, gen_number_options(256), dec(cur_code_arr[4+trigger_yes_cnt+i])));
-        // 修改select框触发更新
-        trigger_no.find('.trigger-no').find('.select-no-' + i).unbind().on('change', refresh_value);
-        trigger_no.find('.trigger-no').append('<button type="button" class="btn btn-danger btn-xs">-</button>');
-        trigger_no.find('.trigger-no').find('.form-control').unbind().on('change', refresh_value);
-        trigger_no.find('.trigger-no').find('.btn-danger').unbind().on('click', function(){
-            delete_select($(this));
-        });
-        trigger_no.find('.trigger-no').append('<br>');
-    }
-    // 点击+按钮新增事件
-    trigger_no.find('.trigger-no').find('.btn-success').unbind().on('click', function(){
-        if(trigger_no.find('.trigger-no').find('.form-control').length == 0)
-            last_i = 0;
-        else
-            last_i = Number(trigger_no.find('.trigger-no').find('.form-control').last().attr('class').split('-').pop()) + 1;
-        trigger_no.find('.trigger-no').append(select_custom('no-' + last_i, gen_number_options(256), 0));
-        trigger_no.find('.trigger-no').append('<button type="button" class="btn btn-danger btn-xs">-</button>');
-        trigger_no.find('.trigger-no').find('.form-control').unbind().on('change', refresh_value);
-        // 点击-按钮删除事件
-        trigger_no.find('.trigger-no').find('.btn-danger').unbind().on('click', function(){
-            delete_select($(this));
-        });
-        trigger_no.find('.trigger-no').append('<br>');
-        refresh_value();
-    });
-    $('.modal-param-sub').append(trigger_no);
-}
-function select_instr_index_code_subitems(code)
-{
-    $('.modal-param-instrsub').empty();
-    var cur_code_arr = $('#instr_index_to_ret').val().split(' ');
-    var _code = code.replace('0x', '');
-    //var _code = hex($('.modal-param-instrcode').find('.select-instr-index-code').val());
-    if(['0x00', '0x01'].indexOf(code) != -1)
-    {
-        // 00 顺序执行
-        // 01 分支执行
-        params = '00 00 00 00 00 00';
-        var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
-        $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
-    }
-    else if(code == '0x02')
-    {
-        // 02 进入城市建筑
-        params = '00 00 00 00 00 00';
-        var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
-        $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
-    }
-    else if(code == '0x03')
-    {
-        // 03 对话
-        var cur_select = code_hex([cur_code_arr[2], cur_code_arr[3]].join(' '), 1).replace(' ', '');
-        var avatar_id = dec(cur_select);
-        $('.modal-param-instrsub').append('<label>角色</label>');
-        $('.modal-param-instrsub').append(select_avatar(0, avatar_id));
-        $('.modal-param-instrsub').find('.form-control').unbind().on('change', function(){
-            var avatar_code = hex_code(hex($('.modal-param-instrsub').find('.select-avatar-0').val()), 2, 1);
-            params = avatar_code + ' 00 00 00 00';
-            var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
-            $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
-        });
-    }
-    else if(code == '0x04')
-    {
-        // 04 单挑
-        var cur_select = code_hex([cur_code_arr[2], cur_code_arr[3]].join(' '), 1).replace(' ', '');
-        var avatar_id1 = dec(cur_select);
-        var cur_select = code_hex([cur_code_arr[4], cur_code_arr[5]].join(' '), 1).replace(' ', '');
-        var avatar_id2 = dec(cur_select);
-        $('.modal-param-instrsub').append('<label>角色1</label>');
-        $('.modal-param-instrsub').append(select_avatar(0, avatar_id1));
-        $('.modal-param-instrsub').append('<label>角色2</label>');
-        $('.modal-param-instrsub').append(select_avatar(1, avatar_id2));
-        $('.modal-param-instrsub').find('.form-control').unbind().on('change', function(){
-            var avatar_code1 = hex_code(hex($('.modal-param-instrsub').find('.select-avatar-0').val()), 2, 1);
-            var avatar_code2 = hex_code(hex($('.modal-param-instrsub').find('.select-avatar-1').val()), 2, 1);
-            params = avatar_code1 + ' ' + avatar_code2 + ' 00 00';
-            var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
-            $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
-        });
-    }
-    else if(code == '0x05')
-    {
-        // 05 进入城市
-        params = '00 00 00 00 00 00';
-        var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
-        $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
-    }
-    else if(code == '0x06')
-    {
-        // 06 战场移到点
-        var cur_select = code_hex([cur_code_arr[2], cur_code_arr[3]].join(' '), 1).replace(' ', '');
-        var avatar_id = dec(cur_select);
-        $('.modal-param-instrsub').append('<label>角色</label>');
-        $('.modal-param-instrsub').append(select_avatar(0, avatar_id));
-        $('.modal-param-instrsub').append('<label>X</label>');
-        $('.modal-param-instrsub').append(select_custom('x', gen_number_options(100), dec(cur_code_arr[4])));
-        $('.modal-param-instrsub').append('<label>Y</label>');
-        $('.modal-param-instrsub').append(select_custom('y', gen_number_options(100), dec(cur_code_arr[5])));
-        $('.modal-param-instrsub').find('.form-control').unbind().on('change', function(){
-            var avatar_code = hex_code(hex($('.modal-param-instrsub').find('.select-avatar-0').val()), 2, 1);
-            var x = hex($('.modal-param-instrsub').find('.select-x').val());
-            var y = hex($('.modal-param-instrsub').find('.select-y').val());
-            params = avatar_code + ' ' + x + ' ' + y + ' 00 00';
-            var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
-            $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
-        });
-    }
-    else if(code == '0x07')
-    {
-        // 07 战斗胜利
-        params = '00 00 00 00 00 00';
-        var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
-        $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
-    }
-    else if(code == '0x08')
-    {
-        // 08 战斗失败
-        params = '00 00 00 00 00 00';
-        var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
-        $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
-    }
-    else if(code == '0x09')
-    {
-        // 09 指定回合
-        $('.modal-param-instrsub').append('<label>回合</label>');
-        $('.modal-param-instrsub').append(select_custom('round', gen_number_options(100), dec(cur_code_arr[2])));
-        $('.modal-param-instrsub').find('.form-control').unbind().on('change', function(){
-            var round = hex($('.modal-param-instrsub').find('.select-round').val());
-            params = round + ' 00 00 00 00 00';
-            var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
-            $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
-        });
-    }
-    else if(code == '0x0a')
-    {
-        // 0a 未知
-        params = '00 00 00 00 00 00';
-        var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
-        $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
-    }
-    else if(code == '0x0b')
-    {
-        // 0b 战场移到区域
-        var cur_select = code_hex([cur_code_arr[2], cur_code_arr[3]].join(' '), 1).replace(' ', '');
-        var avatar_id = dec(cur_select);
-        $('.modal-param-instrsub').append('<label>角色</label>');
-        $('.modal-param-instrsub').append(select_avatar(0, avatar_id));
-        $('.modal-param-instrsub').append('<label>左上X</label>');
-        $('.modal-param-instrsub').append(select_custom('x0', gen_number_options(100), dec(cur_code_arr[4])));
-        $('.modal-param-instrsub').append('<label>左上Y</label>');
-        $('.modal-param-instrsub').append(select_custom('y0', gen_number_options(100), dec(cur_code_arr[5])));
-        $('.modal-param-instrsub').append('<label>右下X</label>');
-        $('.modal-param-instrsub').append(select_custom('x1', gen_number_options(100), dec(cur_code_arr[6])));
-        $('.modal-param-instrsub').append('<label>右下Y</label>');
-        $('.modal-param-instrsub').append(select_custom('y1', gen_number_options(100), dec(cur_code_arr[7])));
-        $('.modal-param-instrsub').find('.form-control').unbind().on('change', function(){
-            var avatar_code = hex_code(hex($('.modal-param-instrsub').find('.select-avatar-0').val()), 2, 1);
-            var x0 = hex($('.modal-param-instrsub').find('.select-x0').val());
-            var y0 = hex($('.modal-param-instrsub').find('.select-y0').val());
-            var x1 = hex($('.modal-param-instrsub').find('.select-x1').val());
-            var y1 = hex($('.modal-param-instrsub').find('.select-y1').val());
-            params = avatar_code + ' ' + x0 + ' ' + y0 + ' ' + x1 + ' ' + y1;
-            var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
-            $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
-        });
-    }
-    else if(code == '0x0c')
-    {
-        // 0c 撤退
-        params = '00 00 00 00 00 00';
-        var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
-        $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
-    }
-}
-function select_script_code_subitems(code)
-{
-    $('.modal-param-sub').empty();
-    var cur_code_arr = $('#script_to_ret').val().split(' ');
-    var _code = code.replace('0x', '');
-    if(code == '0x22')
-        $('#ScriptsModal').find('.modal-dialog').width(1600);
-    else if(code == '0x03')
-        $('#ScriptsModal').find('.modal-dialog').width(900);
-    else
-        $('#ScriptsModal').find('.modal-dialog').width(600);
-    if(['0x00', '0x08', '0x0b', '0x0d', '0x0e', '0x25'].indexOf(code) != -1)
-    {
-        // 00 显示带人物头像的系列对话
-        // 08 在屏幕中央显示多行信息
-        // 0b 在画面中心显示信息
-        // 0d 在画面左下角框中显示信息
-        // 0e 在画面中央显示信息
-        // 25 显示决定供选择
-        var cur_select = '0x' + hex_code(code_hex([cur_code_arr[1], cur_code_arr[2]].join(' '), 1), 2).replace(' ', '');
-        var options = [];
-        var page = Number($('#page_id').val());
-        var txt_list = snrm_editor.get()[page]['txt_list'];
-        for(i in txt_list)
-        {
-            var addr = '0x' + hex_code(txt_list[i].addr.replace('0x', ''), 2).replace(' ', '');
-            var code_bin = txt_list[i].code;
-            var name = txt_list[i].name;
-            var txt = txt_list[i].txt;
-            if(code_bin.substring(0, 5) == 'ff ff')
-                continue;
-            var txt_short = txt.substring(0, 30) + '(共' + txt.length + '字)';
-            if(name != '')
-            {
-                // 带头像对话
-                txt_short = '[' + name + ']' + txt_short;
-                if(code != '0x00')
-                    continue;
-            }
-            else
-            {
-                // 一般文字
-                if(code == '0x00')
-                    continue;
-            }
-            options.push({value: addr, option: addr + ':' + txt_short});
+        settings.find('.settings').append('<div class="col-12"></div>');
+        settings.find('.settings .col-12').eq(-1).append('<div class="col-12"></div>');
+        settings.find('.settings .col-12').eq(-1).append('<label>我方主将</label>');
+        settings.find('.settings .col-12').eq(-1).append(select_avatar('my-main', avatar_id));
+        settings.find('.settings').find('.form-control').addClass('input-sm');
+        $('.modal-param-sub').append(settings);
+        army_arr.splice(0, 12);
+        $('.modal-param-sub').append('<h5>部署设置</h5>');
+        var appear_options = [];
+        appear_options.push({ value: 0, option: '直接' });
+        appear_options.push({ value: 1, option: '事件' });
+        for (var i = 0; i < 30; i++) {
+            var s = i * 9;
+            var avatar_id_hex = code_hex([army_arr[s], army_arr[s + 1]].join(' '), 1).replace(' ', '');
+            var avatar_id = dec(avatar_id_hex);
+            var army = $('<form><div class="avatar row row-cols-lg-auto g-3 align-items-center"></div></form>');
+            army.find('.avatar').append('<div class="col-12"></div>');
+            army.find('.avatar .col-12').eq(-1).append('<label>角色' + (i + 1) + '</label>');
+            army.find('.avatar .col-12').eq(-1).append(select_avatar(i, avatar_id));
+            army.find('.avatar').append('<div class="col-12"></div>');
+            army.find('.avatar .col-12').eq(-1).append('<label>X</label>');
+            army.find('.avatar .col-12').eq(-1).append(select_custom('x', gen_number_options(100), dec(army_arr[s + 2])));
+            army.find('.avatar').append('<div class="col-12"></div>');
+            army.find('.avatar .col-12').eq(-1).append('<label>Y</label>');
+            army.find('.avatar .col-12').eq(-1).append(select_custom('y', gen_number_options(100), dec(army_arr[s + 3])));
+            army.find('.avatar').append('<div class="col-12"></div>');
+            army.find('.avatar .col-12').eq(-1).append('<label>出场</label>');
+            army.find('.avatar .col-12').eq(-1).append(select_custom('appear', appear_options, dec(army_arr[s + 5])));
+            army.find('.avatar').append('<div class="col-12"></div>');
+            army.find('.avatar .col-12').eq(-1).append('<label>事件</label>');
+            army.find('.avatar .col-12').eq(-1).append(select_custom('event', gen_number_options(256), dec(army_arr[s + 6])));
+            army.find('.avatar').append('<div class="col-12"></div>');
+            army.find('.avatar .col-12').eq(-1).append('<label>朝向</label>');
+            army.find('.avatar .col-12').eq(-1).append(select_custom('direction', gen_number_options(4), dec(army_arr[s + 7])));
+            army.find('.avatar').append('<div class="col-12"></div>');
+            army.find('.avatar .col-12').eq(-1).append('<label>伏兵</label>');
+            army.find('.avatar .col-12').eq(-1).append(select_custom('fubing', gen_number_options(2), dec(army_arr[s + 8])));
+            army.find('.avatar').find('.form-control').addClass('form-control-sm');
+            $('.modal-param-sub').append(army);
+            $('.modal-param-sub').append('<hr>');
         }
-        $('.modal-param-sub').append(select_custom('txt', options, cur_select));
-        $('.modal-param-sub').find('.select-txt').unbind().on('change', function(){
-            var _addr = hex_code($(this).val().replace('0x', ''), 2, 1);
-            $('#script_to_ret').val(_code + ' ' + _addr);
-        });
+        $('.modal-param-sub').find('.form-control').on('change', refresh_value);
     }
-    else if(['0x01', '0x0a'].indexOf(code) != -1)
-    {
-        // 01 指定人物在剧情场景的行动
-        // 0a 部署非战斗模式中的人物
-        var cur_select = code_hex([cur_code_arr[1], cur_code_arr[2]].join(' '), 1).replace(' ', '');
-        var avatar_id = dec(cur_select);
-        var avatar = $('<form class="form-inline"><div class="form-group avatar"></div></form>');
-        avatar.find('.avatar').append('<label>角色</label>');
-        avatar.find('.avatar').append(select_avatar(0, avatar_id));
-        avatar.find('.avatar').append('<label>X</label>');
-        avatar.find('.avatar').append(select_custom('x', gen_number_options(100), dec(cur_code_arr[3])));
-        avatar.find('.avatar').append('<label>Y</label>');
-        avatar.find('.avatar').append(select_custom('y', gen_number_options(100), dec(cur_code_arr[4])));
-        avatar.find('.avatar').append('<label>朝向</label>');
-        avatar.find('.avatar').append(select_custom('direction', gen_number_options(4), dec(cur_code_arr[5])));
-        $('.modal-param-sub').append(avatar);
-        $('.modal-param-sub').find('.avatar').unbind().on('change', function(){
-            var avatar_code = hex_code(hex($(this).find('.select-avatar-0').val()), 2, 1);
-            var x_code = hex_code(hex($(this).find('.select-x').val()), 1);
-            var y_code = hex_code(hex($(this).find('.select-y').val()), 1);
-            var direction_code = hex_code(hex($(this).find('.select-direction').val()), 1);
-            $('#script_to_ret').val(_code + ' ' + avatar_code + ' ' + x_code + ' ' + y_code + ' ' + direction_code);
-        });
-    }
-    else if(code == '0x03')
-    {
-        // 03 部署我军部队
-        select_friend_army();
-    }
-    else if(['0x05', '0x12', '0x13', '0x23', '0x29', '0x31',
-            '0x33', '0x34', '0x36', '0xff'].indexOf(code) != -1)
-    {
-        $('#script_to_ret').val(_code);
-    }
-    else if(code == '0x07')
-    {
-        // 07 显示图片
-        var cur_select = '0x' + hex_code(code_hex([cur_code_arr[1], cur_code_arr[2]].join(' '), 1), 2).replace(' ', '');
-        var options = [];
-        for(var i = 0; i < 288; i++)
-        {
-            var pic_id = '0x' + hex_code(hex(i), 2).replace(' ', '');
-            options.push({value: pic_id, option: '图片' + pic_id});
-        }
-        $('.modal-param-sub').append(select_custom('pic', options, cur_select));
-        $('.modal-param-sub').find('.select-pic').unbind().on('change', function(){
-            var value = hex_code($(this).val().replace('0x', ''), 2, 1);
-            $('#script_to_ret').val(_code + ' ' + value);
-        });
-    }
-    else if(code == '0x09')
-    {
-        // 09 指定战场/场景/大地图
-    }
-    else if(code == '0x0f')
-    {
-        // 0f 重新读入本章本节某段剧本指令
-    }
-    else if(code == '0x10')
-    {
-        // 10 武将单挑
-        var cur_select = code_hex([cur_code_arr[1], cur_code_arr[2]].join(' '), 1).replace(' ', '');
-        var avatar_id1 = dec(cur_select);
-        var cur_select = code_hex([cur_code_arr[3], cur_code_arr[4]].join(' '), 1).replace(' ', '');
-        var avatar_id2 = dec(cur_select);
-        $('.modal-param-sub').append('<label>角色1</label>');
-        $('.modal-param-sub').append(select_avatar(0, avatar_id1));
-        $('.modal-param-sub').append('<label>角色2</label>');
-        $('.modal-param-sub').append(select_avatar(1, avatar_id2));
-        $('.modal-param-sub').find('.form-control').unbind().on('change', function(){
-            var avatar_code1 = hex_code(hex($('.modal-param-sub').find('.select-avatar-0').val()), 2, 1);
-            var avatar_code2 = hex_code(hex($('.modal-param-sub').find('.select-avatar-1').val()), 2, 1);
-            $('#script_to_ret').val(_code + ' ' + avatar_code1 + ' ' + avatar_code2);
-        });
-    }
-    else if(code == '0x11')
-    {
-        // 11 切换到地图/场景/战场
-    }
-    else if(code == '0x14')
-    {
-        // 14 设置事件开关
-        $('.modal-param-sub').append(select_custom('event', gen_number_options(256), dec(cur_code_arr[1])));
-        $('.modal-param-sub').append(select_custom('switch', gen_number_options(2), dec(cur_code_arr[2])));
-        $('.modal-param-sub').find('.form-control').unbind().on('change', function(){
-            var event = hex($('.modal-param-sub').find('.select-event').val());
-            var eswitch = hex($('.modal-param-sub').find('.select-switch').val());
-            $('#script_to_ret').val(_code + ' ' + event + ' ' + eswitch);
-        });
-    }
-    else if(code == '0x15')
-    {
-        // 15 是否出战的对话框显示
-    }
-    else if(code == '0x17')
-    {
-        // 17 剧情模式开关
-        var cur_select = '0x' + cur_code_arr[1];
-        var options = [
-            {value: '0x01', option: '剧情 开'},
-            {value: '0x00', option: '剧情 关'},
-        ];
-        $('.modal-param-sub').append(select_custom('scenario', options, cur_select));
-        $('.modal-param-sub').find('.select-scenario').unbind().on('change', function(){
-            var value = $(this).val().replace('0x', '');
-            $('#script_to_ret').val(_code + ' ' + value);
-        });
-    }
-    else if(['0x18', '0x1a'].indexOf(code) != -1)
-    {
-        // 18 人物消失、部队撤退
-        // 1a 援军出现
-        var cur_select = code_hex([cur_code_arr[1], cur_code_arr[2]].join(' '), 1).replace(' ', '');
-        var avatar_id = dec(cur_select);
-        $('.modal-param-sub').append('<label>角色</label>');
-        $('.modal-param-sub').append(select_avatar(0, avatar_id));
-        $('.modal-param-sub').find('.form-control').unbind().on('change', function(){
-            var avatar_code = hex_code(hex($('.modal-param-sub').find('.select-avatar-0').val()), 2, 1);
-            $('#script_to_ret').val(_code + ' ' + avatar_code);
-        });
-    }
-    else if(code == '0x1b')
-    {
-        // 1b 获得道具
-        $('.modal-param-sub').append('<label>道具</label>');
-        $('.modal-param-sub').append(select_custom('daoju', daoju_options, dec(cur_code_arr[1])));
-        $('.modal-param-sub').find('.form-control').unbind().on('change', function(){
-            var daoju_code = hex($('.modal-param-sub').find('.select-daoju').val());
-            $('#script_to_ret').val(_code + ' ' + daoju_code);
-        });
-    }
-    else if(code == '0x1c')
-    {
-        // 1c 改变人物AI
-        var cur_select = code_hex([cur_code_arr[1], cur_code_arr[2]].join(' '), 1).replace(' ', '');
-        var avatar_id = dec(cur_select);
-        $('.modal-param-sub').append('<label>角色</label>');
-        $('.modal-param-sub').append(select_avatar(0, avatar_id));
-        $('.modal-param-sub').append('<label>AI类型</label>');
-        $('.modal-param-sub').append(select_custom('ai-type', gen_number_options(8), dec(cur_code_arr[3])));
-        $('.modal-param-sub').append('<label>AI目标X</label>');
-        $('.modal-param-sub').append(select_custom('ai-target-x', gen_number_options(100), dec(cur_code_arr[4])));
-        $('.modal-param-sub').append('<label>AI目标Y</label>');
-        $('.modal-param-sub').append(select_custom('ai-target-y', gen_number_options(100), dec(cur_code_arr[5])));
-        $('.modal-param-sub').find('.form-control').unbind().on('change', function(){
-            var avatar_code = hex_code(hex($('.modal-param-sub').find('.select-avatar-0').val()), 2, 1);
-            var ai_type = hex($('.modal-param-sub').find('.select-ai-type').val());
-            var ai_x = hex($('.modal-param-sub').find('.select-ai-target-x').val());
-            var ai_y = hex($('.modal-param-sub').find('.select-ai-target-y').val());
-            $('#script_to_ret').val(_code + ' ' + avatar_code + ' ' + ai_type + ' ' + ai_x + ' ' + ai_y);
-        });
-    }
-    else if(code == '0x20')
-    {
-        // 20 子指令数目
-    }
-    else if(code == '0x21')
-    {
-        // 21 检查事件是否触发
-        check_events(cur_code_arr);
-    }
-    else if(code == '0x22')
-    {
-        // 22 部署敌军
-        select_opp_army();
-    }
-    else if(['0x24', '0x28'].indexOf(code) != -1)
-    {
-        // 24 修改武将阵营
-        // 28 战场改变武将阵营
-        var cur_select = code_hex([cur_code_arr[1], cur_code_arr[2]].join(' '), 1).replace(' ', '');
-        var avatar_id = dec(cur_select);
-        $('.modal-param-sub').append('<label>角色</label>');
-        $('.modal-param-sub').append(select_avatar(0, avatar_id));
-        $('.modal-param-sub').append('<label>属军</label>');
-        $('.modal-param-sub').append(select_custom('juntuan', juntuan_options, dec(cur_code_arr[3])));
-        $('.modal-param-sub').find('.form-control').unbind().on('change', function(){
-            var avatar_code = hex_code(hex($('.modal-param-sub').find('.select-avatar-0').val()), 2, 1);
-            var juntuan = hex($('.modal-param-sub').find('.select-juntuan').val());
-            $('#script_to_ret').val(_code + ' ' + avatar_code + ' ' + juntuan);
-        });
-    }
-    else if(code == '0x26')
-    {
-        // 26 改变战场地形
-        $('.modal-param-sub').append('<label>X</label>');
-        $('.modal-param-sub').append(select_custom('x', gen_number_options(100), dec(cur_code_arr[1])));
-        $('.modal-param-sub').append('<label>Y</label>');
-        $('.modal-param-sub').append(select_custom('y', gen_number_options(100), dec(cur_code_arr[2])));
-        $('.modal-param-sub').append('<label>地形</label>');
-        var ground_options = [
-            {value: 0, option: '0x00:未知'},
-            {value: 1, option: '0x01:吊桥'},
-            {value: 2, option: '0x02:未知'},
-        ];
-        $('.modal-param-sub').append(select_custom('ground', ground_options, dec(cur_code_arr[3])));
-        $('.modal-param-sub').find('.form-control').unbind().on('change', function(){
-            var x = hex($('.modal-param-sub').find('.select-x').val());
-            var y = hex($('.modal-param-sub').find('.select-y').val());
-            var ground = hex($('.modal-param-sub').find('.select-ground').val());
-            $('#script_to_ret').val(_code + ' ' + x + ' ' + y + ' ' + ground);
-        });
-    }
-    else if(code == '0x27')
-    {
-        // 27 放火或放水
-        $('.modal-param-sub').append('<label>X</label>');
-        $('.modal-param-sub').append(select_custom('x', gen_number_options(100), dec(cur_code_arr[1])));
-        $('.modal-param-sub').append('<label>Y</label>');
-        $('.modal-param-sub').append(select_custom('y', gen_number_options(100), dec(cur_code_arr[2])));
-        $('.modal-param-sub').append('<label>操作</label>');
-        var firewater_options = [
-            {value: 0, option: '0x00:放火'},
-            {value: 1, option: '0x01:放水'},
-            {value: 2, option: '0x02:取消'},
-        ];
-        $('.modal-param-sub').append(select_custom('firewater', firewater_options, dec(cur_code_arr[3])));
-        $('.modal-param-sub').find('.form-control').unbind().on('change', function(){
-            var x = hex($('.modal-param-sub').find('.select-x').val());
-            var y = hex($('.modal-param-sub').find('.select-y').val());
-            var firewater = hex($('.modal-param-sub').find('.select-firewater').val());
-            $('#script_to_ret').val(_code + ' ' + x + ' ' + y + ' ' + firewater);
-        });
-    }
-    else if(code == '0x2a')
-    {
-        // 2a 显示游戏结局
-        $('.modal-param-sub').append('<label>结局</label>');
-        var ending_options = [
-            {value: 0, option: '0x00:正常结局'},
-            {value: 1, option: '0x01:与吴国结盟结局'},
-            {value: 2, option: '0x02:关羽死亡结局'},
-            {value: 3, option: '0x03:刘备驾崩结局'},
-        ];
-        $('.modal-param-sub').append(select_custom('ending', ending_options, dec(cur_code_arr[1])));
-        $('.modal-param-sub').find('.form-control').unbind().on('change', function(){
-            var ending = hex($('.modal-param-sub').find('.select-ending').val());
-            $('#script_to_ret').val(_code + ' ' + ending);
-        });
-    }
-    else if(code == '0x2b')
-    {
-        // 2b 给予黄金/残存部队获得经验
-        var cur_select = code_hex([cur_code_arr[2], cur_code_arr[3]].join(' '), 1).replace(' ', '');
-        var value = dec(cur_select);
-        var get_options = [
-            {value: 2, option: '0x02:获得金'},
-            {value: 4, option: '0x04:残存部队获得经验'},
-        ];
-        $('.modal-param-sub').append('<label>类型</label>');
-        $('.modal-param-sub').append(select_custom('get-type', get_options, dec(cur_code_arr[1])));
-        $('.modal-param-sub').append('<label>数量</label>');
-        $('.modal-param-sub').append(select_custom('get-value', gen_number_options(10001), value));
-        $('.modal-param-sub').find('.form-control').unbind().on('change', function(){
-            var get_type = hex($('.modal-param-sub').find('.select-get-type').val());
-            var get_value = hex_code(hex($('.modal-param-sub').find('.select-get-value').val()), 2, 1);
-            $('#script_to_ret').val(_code + ' ' + get_type + ' ' + get_value);
-        });
-    }
-    else if(code == '0x2d')
-    {
-        // 2d 兵力士气减半
-        var target_options = [
-            {value: 0, option: '0x00:我方'},
-            {value: 1, option: '0x01:敌方'},
-        ];
-        var effect_options = [
-            {value: 0, option: '0x00:士气减半'},
-            {value: 1, option: '0x01:兵力减半'},
-        ];
-        $('.modal-param-sub').append('<label>目标</label>');
-        $('.modal-param-sub').append(select_custom('target', target_options, dec(cur_code_arr[1])));
-        $('.modal-param-sub').append('<label>效果</label>');
-        $('.modal-param-sub').append(select_custom('effect', effect_options, dec(cur_code_arr[2])));
-        $('.modal-param-sub').find('.form-control').unbind().on('change', function(){
-            var target = hex($('.modal-param-sub').find('.select-target').val());
-            var effect = hex($('.modal-param-sub').find('.select-effect').val());
-            $('#script_to_ret').val(_code + ' ' + target + ' ' + effect);
-        });
-    }
-    else if(code == '0x2e')
-    {
-        // 2e 切换所在城市
-    }
-    else if(code == '0x2f')
-    {
-        // 2f 修改人物未知属性
-        var cur_select = code_hex([cur_code_arr[1], cur_code_arr[2]].join(' '), 1).replace(' ', '');
-        var avatar_id = dec(cur_select);
-        $('.modal-param-sub').append('<label>角色</label>');
-        $('.modal-param-sub').append(select_avatar(0, avatar_id));
-        $('.modal-param-sub').append('<label>属性</label>');
-        $('.modal-param-sub').append(select_custom('attr', gen_number_options(256), dec(cur_code_arr[3])));
-        $('.modal-param-sub').find('.form-control').unbind().on('change', function(){
-            var avatar_code = hex_code(hex($('.modal-param-sub').find('.select-avatar-0').val()), 2, 1);
-            var attr = hex($('.modal-param-sub').find('.select-attr').val());
-            $('#script_to_ret').val(_code + ' ' + avatar_code + ' ' + attr);
-        });
-    }
-    else if(code == '0x30')
-    {
-        // 30 显示目标（剧情目标或战斗目标）
-    }
-    else if(code == '0x32')
-    {
-        // 32 设置道具屋贩卖物品，废弃指令
-    }
-    else if(code == '0x35')
-    {
-        // 35 单挑动画
-        var cur_select = code_hex([cur_code_arr[1], cur_code_arr[2]].join(' '), 1).replace(' ', '');
-        var avatar_id = dec(cur_select);
-        $('.modal-param-sub').append('<label>角色</label>');
-        $('.modal-param-sub').append(select_avatar(0, avatar_id));
-        $('.modal-param-sub').append('<label>动画</label>');
-        $('.modal-param-sub').append(select_custom('ani', gen_number_options(16), dec(cur_code_arr[3])));
-        $('.modal-param-sub').find('.form-control').unbind().on('change', function(){
-            var avatar_code = hex_code(hex($('.modal-param-sub').find('.select-avatar-0').val()), 2, 1);
-            var ani = hex($('.modal-param-sub').find('.select-ani').val());
-            $('#script_to_ret').val(_code + ' ' + avatar_code + ' ' + ani);
-        });
-    }
-    else if(code == '0x38')
-    {
-        // 38 播放游戏音乐
-        var cur_select = '0x' + cur_code_arr[1];
-        var options = [];
-        for(var i = 0; i < 16; i++)
-            options.push({value: '0x' + hex(i), option: '音乐 0x' + hex(i)});
-        $('.modal-param-sub').append(select_custom('music', options, cur_select));
-        $('.modal-param-sub').find('.select-music').unbind().on('change', function(){
-            var value = $(this).val().replace('0x', '');
-            $('#script_to_ret').val(_code + ' ' + value);
-        });
-    }
-    else if(code == '0x39')
-    {
-        // 39 人物等级上升
-        var cur_select = code_hex([cur_code_arr[1], cur_code_arr[2]].join(' '), 1).replace(' ', '');
-        var avatar_id = dec(cur_select);
-        $('.modal-param-sub').append('<label>角色</label>');
-        $('.modal-param-sub').append(select_avatar(0, avatar_id));
-        $('.modal-param-sub').append('<label>上升等级</label>');
-        $('.modal-param-sub').append(select_custom('level', gen_number_options(100), dec(cur_code_arr[3])));
-        $('.modal-param-sub').find('.form-control').unbind().on('change', function(){
-            var avatar_code = hex_code(hex($('.modal-param-sub').find('.select-avatar-0').val()), 2, 1);
-            var level = hex($('.modal-param-sub').find('.select-level').val());
-            $('#script_to_ret').val(_code + ' ' + avatar_code + ' ' + level);
-        });
-    }
-    else if(code == '0x3a')
-    {
-        // 3a 改变人物兵种
-    }
-    else if(code == '0x3b')
-    {
-        // 3b 重新定位场景位置
-    }
-    else if(code == '0x3c')
-    {
-        // 3c 定位军团
-    }
-    else if(code == '0x3d')
-    {
-        // 3d 一般存盘/战场存盘
-    }
-    $('#script_to_ret').val($('#script_to_ret').val() + ' [说明]');
-}
-function input_text()
-{
-    var dom = '<input type="text" class="form-control input-text">';
-    return $(dom);
-}
-function set_modal(field)
-{
-    $('.modal-param-code').empty();
-    $('.modal-param-sub').empty();
-    if(field == 'name')
-    {
-        var cur_avatar_name = dec($('#script_to_ret').val().split(':')[0].replace('0x', ''));
-        $('.modal-param-code').append(select_avatar(0, cur_avatar_name));
-        $('.modal-param-code').find('.select-avatar-0').unbind().on('change', function(){
-            var avatar_id = $('.modal-param-code').find('.select-avatar-0').val();
-            if(avatar_id == 0xffff || avatar_id == 0x0400)
-                $('#script_to_ret').val('');
-            else
-            {
-                var name = '0x' + hex(avatar_id) + ':' + avatar_list[avatar_id].name;
-                $('#script_to_ret').val(name);
+    function select_opp_army() {
+        var army_arr = $('#script_to_ret').val().split(' ');
+        var _code = army_arr[0];
+        army_arr.splice(0, 2);
+        $('.modal-param-sub').append('<h5>部署设置</h5>');
+        var appear_options = [];
+        appear_options.push({ value: 0, option: '直接' });
+        appear_options.push({ value: 1, option: '事件' });
+        function ai_type_target(ai_type, x, y) {
+            var dom = $('<span></span>');
+            if ([4, 6].indexOf(ai_type) != -1) {
+                dom.append($('<label>目标X</label>'));
+                dom.append(select_custom('ai-target-x', gen_number_options(100), x));
+                dom.append($('<label>目标Y</label>'));
+                dom.append(select_custom('ai-target-y', gen_number_options(100), y));
             }
-        });
+            else if ([3, 5].indexOf(ai_type) != -1) {
+                dom.append($('<label>仇人</label>'));
+                var avatar_id = dec(code_hex(hex(y) + ' ' + hex(x)));
+                dom.append(select_avatar('ai-target-avatar', avatar_id));
+            }
+            $(dom).find('.form-control').addClass('input-sm');
+            return dom;
+        }
+        function refresh_value() {
+            var army_list = [];
+            for (var i = 0; i < 30; i++) {
+                var item = $('.modal-param-sub').find('.avatar').eq(i);
+                var army_code = [];
+                army_code.push(hex_code(hex(item.find('.select-avatar-' + i).val()), 2, 1));
+                army_code.push(hex(item.find('.select-x').val()));
+                army_code.push(hex(item.find('.select-y').val()));
+                army_code.push(hex(item.find('.select-appear').val()));
+                army_code.push(hex(item.find('.select-event').val()));
+                army_code.push(hex(item.find('.select-direction').val()));
+                army_code.push(hex(item.find('.select-fubing').val()));
+                army_code.push(hex(item.find('.select-ai-type').val()));
+                if (item.find('.select-ai-target-x').length > 0) {
+                    army_code.push(hex(item.find('.select-ai-target-x').val()));
+                    army_code.push(hex(item.find('.select-ai-target-y').val()));
+                }
+                else if (item.find('.select-avatar-ai-target-avatar').length > 0)
+                    army_code.push(hex_code(hex(item.find('.select-avatar-ai-target-avatar').val()), 2, 1));
+                else
+                    army_code.push('00', '00');
+                army_code.push(hex(item.find('.select-bingzhong').val()));
+                army_code.push(hex(item.find('.select-level').val()));
+                army_list.push(army_code.join(' '));
+            }
+            $('#script_to_ret').val(_code + ' 00 ' + army_list.join(' '));
+        }
+        for (var i = 0; i < 30; i++) {
+            var s = i * 13;
+            var avatar_id_hex = code_hex([army_arr[s], army_arr[s + 1]].join(' '), 1).replace(' ', '');
+            var avatar_id = dec(avatar_id_hex);
+            var army = $('<form><div class="avatar row row-cols-lg-auto g-3 align-items-center"></div></form>');
+            army.find('.avatar').append('<div class="col-12"></div>');
+            army.find('.avatar .col-12').eq(-1).append('<label>角色' + (i + 1) + '</label>');
+            army.find('.avatar .col-12').eq(-1).append(select_avatar(i, avatar_id));
+            army.find('.avatar').append('<div class="col-12"></div>');
+            army.find('.avatar .col-12').eq(-1).append('<label>兵种</label>');
+            army.find('.avatar .col-12').eq(-1).append(select_custom('bingzhong', bingzhong_options, dec(army_arr[s + 11])));
+            army.find('.avatar').append('<div class="col-12"></div>');
+            army.find('.avatar .col-12').eq(-1).append('<label>等级</label>');
+            army.find('.avatar .col-12').eq(-1).append(select_custom('level', gen_number_options(100), dec(army_arr[s + 12])));
+            army.find('.avatar').append('<div class="col-12"></div>');
+            army.find('.avatar .col-12').eq(-1).append('<label>X</label>');
+            army.find('.avatar .col-12').eq(-1).append(select_custom('x', gen_number_options(100), dec(army_arr[s + 2])));
+            army.find('.avatar').append('<div class="col-12"></div>');
+            army.find('.avatar .col-12').eq(-1).append('<label>Y</label>');
+            army.find('.avatar .col-12').eq(-1).append(select_custom('y', gen_number_options(100), dec(army_arr[s + 3])));
+            army.find('.avatar').append('<div class="col-12"></div>');
+            army.find('.avatar .col-12').eq(-1).append('<label>出场</label>');
+            army.find('.avatar .col-12').eq(-1).append(select_custom('appear', appear_options, dec(army_arr[s + 4])));
+            army.find('.avatar').append('<div class="col-12"></div>');
+            army.find('.avatar .col-12').eq(-1).append('<label>事件</label>');
+            army.find('.avatar .col-12').eq(-1).append(select_custom('event', gen_number_options(256), dec(army_arr[s + 5])));
+            army.find('.avatar').append('<div class="col-12"></div>');
+            army.find('.avatar .col-12').eq(-1).append('<label>朝向</label>');
+            army.find('.avatar .col-12').eq(-1).append(select_custom('direction', gen_number_options(4), dec(army_arr[s + 6])));
+            army.find('.avatar').append('<div class="col-12"></div>');
+            army.find('.avatar .col-12').eq(-1).append('<label>伏兵</label>');
+            army.find('.avatar .col-12').eq(-1).append(select_custom('fubing', gen_number_options(2), dec(army_arr[s + 7])));
+            army.find('.avatar').append('<div class="col-12"></div>');
+            army.find('.avatar .col-12').eq(-1).append('<label>AI</label>');
+            var ai_type = dec(army_arr[s + 8]);
+            var ai_x = dec(army_arr[s + 9]);
+            var ai_y = dec(army_arr[s + 10]);
+            army.find('.avatar .col-12').eq(-1).append(select_custom('ai-type', ai_options, ai_type));
+            army.find('.avatar .col-12').eq(-1).append(ai_type_target(ai_type, ai_x, ai_y));
+            army.find('.avatar').find('.select-ai-type').unbind().on('change', function () {
+                $(this).next().remove();
+                var ai_type = $(this).val();
+                var new_ai_target = ai_type_target(Number(ai_type), 0, 0);
+                $(new_ai_target).find('.form-control').on('change', refresh_value);
+                $(new_ai_target).insertAfter($(this));
+            });
+            army.find('.avatar').find('.form-control').addClass('form-control-sm');
+            $('.modal-param-sub').append(army);
+            $('.modal-param-sub').append('<hr>');
+            army.find('.avatar').find('.form-control').on('change', refresh_value);
+        }
     }
-    if(field == 'txt')
-    {
-        $('.modal-param-code').append(input_text());
-        $('.modal-param-code').find('.input-text').val($('#script_to_ret').val()).unbind().on('change', function(){
-            var txt = $(this).val();
-            $('#script_to_ret').val(txt);
+    function check_events(cur_code_arr) {
+        var _code = cur_code_arr[0];
+        function refresh_value() {
+            // 跳过指令数
+            var jump_code = hex($('.modal-param-sub').find('.select-jump').val());
+            // 统计已触发数量
+            var yes_objs = trigger_yes.find('.trigger-yes').find('.form-control');
+            var yes_cnt = hex(yes_objs.length);
+            var yes_list = '';
+            for (var i = 0; i < yes_objs.length; i++)
+                yes_list += hex(yes_objs.eq(i).val().replace('0x', '')) + ' ';
+            // 统计未触发数量
+            var no_objs = trigger_no.find('.trigger-no').find('.form-control');
+            var no_cnt = hex(no_objs.length);
+            var no_list = '';
+            for (var i = 0; i < no_objs.length; i++)
+                no_list += hex(no_objs.eq(i).val().replace('0x', '')) + ' ';
+            $('#script_to_ret').val(_code + ' ' + jump_code + ' ' + yes_cnt + ' ' + yes_list + no_cnt + ' ' + no_list);
+        }
+        function delete_select(obj) {
+            // 删除select框并刷新
+            $(obj).prev().remove();
+            $(obj).next().remove();
+            $(obj).remove();
+            refresh_value();
+        }
+        $('.modal-param-sub').append('<label>检查通过后跳过的指令数</label>');
+        $('.modal-param-sub').append(select_custom('jump', gen_number_options(100), dec(cur_code_arr[1])));
+        // 开始处理已触发事件
+        var trigger_yes = $('<form class="form-inline"><div class="form-group trigger-yes"></div></form>');
+        var trigger_yes_cnt = dec(cur_code_arr[2]);
+        trigger_yes.find('.trigger-yes').append('<label>已触发事件</label>');
+        trigger_yes.find('.trigger-yes').append('<button type="button" class="btn btn-success btn-xs">+</button>');
+        trigger_yes.find('.trigger-yes').append('<br>');
+        // 根据原指令放置已触发事件
+        for (var i = 0; i < trigger_yes_cnt; i++) {
+            trigger_yes.find('.trigger-yes').append(select_custom('yes-' + i, gen_number_options(256), dec(cur_code_arr[3 + i])));
+            // 修改select框触发更新
+            trigger_yes.find('.trigger-yes').find('.select-yes-' + i).unbind().on('change', refresh_value);
+            trigger_yes.find('.trigger-yes').append('<button type="button" class="btn btn-danger btn-xs">-</button>');
+            trigger_yes.find('.trigger-yes').find('.btn-danger').unbind().on('click', function () {
+                delete_select($(this));
+            });
+            trigger_yes.find('.trigger-yes').append('<br>');
+        }
+        // 点击+按钮新增事件
+        trigger_yes.find('.trigger-yes').find('.btn-success').unbind().on('click', function () {
+            if (trigger_yes.find('.trigger-yes').find('.form-control').length == 0)
+                last_i = 0;
+            else
+                last_i = Number(trigger_yes.find('.trigger-yes').find('.form-control').last().attr('class').split('-').pop()) + 1;
+            trigger_yes.find('.trigger-yes').append(select_custom('yes-' + last_i, gen_number_options(256), 0));
+            trigger_yes.find('.trigger-yes').append('<button type="button" class="btn btn-danger btn-xs">-</button>');
+            trigger_yes.find('.trigger-yes').find('.form-control').unbind().on('change', refresh_value);
+            // 点击-按钮删除事件
+            trigger_yes.find('.trigger-yes').find('.btn-danger').unbind().on('click', function () {
+                delete_select($(this));
+            });
+            trigger_yes.find('.trigger-yes').append('<br>');
+            refresh_value();
         });
+        $('.modal-param-sub').append(trigger_yes);
+        // 开始处理未触发事件
+        var trigger_no = $('<form class="form-inline"><div class="form-group trigger-no"></div></form>');
+        var trigger_no_cnt = dec(cur_code_arr[3 + trigger_yes_cnt]);
+        trigger_no.find('.trigger-no').append('<label>未触发事件</label>');
+        trigger_no.find('.trigger-no').append('<button type="button" class="btn btn-success btn-xs">+</button>');
+        trigger_no.find('.trigger-no').append('<br>');
+        // 根据原指令放置未触发事件
+        for (var i = 0; i < trigger_no_cnt; i++) {
+            trigger_no.find('.trigger-no').append(select_custom('no-' + i, gen_number_options(256), dec(cur_code_arr[4 + trigger_yes_cnt + i])));
+            // 修改select框触发更新
+            trigger_no.find('.trigger-no').find('.select-no-' + i).unbind().on('change', refresh_value);
+            trigger_no.find('.trigger-no').append('<button type="button" class="btn btn-danger btn-xs">-</button>');
+            trigger_no.find('.trigger-no').find('.form-control').unbind().on('change', refresh_value);
+            trigger_no.find('.trigger-no').find('.btn-danger').unbind().on('click', function () {
+                delete_select($(this));
+            });
+            trigger_no.find('.trigger-no').append('<br>');
+        }
+        // 点击+按钮新增事件
+        trigger_no.find('.trigger-no').find('.btn-success').unbind().on('click', function () {
+            if (trigger_no.find('.trigger-no').find('.form-control').length == 0)
+                last_i = 0;
+            else
+                last_i = Number(trigger_no.find('.trigger-no').find('.form-control').last().attr('class').split('-').pop()) + 1;
+            trigger_no.find('.trigger-no').append(select_custom('no-' + last_i, gen_number_options(256), 0));
+            trigger_no.find('.trigger-no').append('<button type="button" class="btn btn-danger btn-xs">-</button>');
+            trigger_no.find('.trigger-no').find('.form-control').unbind().on('change', refresh_value);
+            // 点击-按钮删除事件
+            trigger_no.find('.trigger-no').find('.btn-danger').unbind().on('click', function () {
+                delete_select($(this));
+            });
+            trigger_no.find('.trigger-no').append('<br>');
+            refresh_value();
+        });
+        $('.modal-param-sub').append(trigger_no);
     }
-    if(field == 'script_list')
-    {
-        $('.modal-param-code').append('<label>指令</label>');
-        $('.modal-param-code').append(select_script_code());
-        var code = '0x' + $('#script_to_ret').val().split(' ')[0];
-        if(code != '0x')
+    function select_instr_index_code_subitems(code) {
+        $('.modal-param-instrsub').empty();
+        var cur_code_arr = $('#instr_index_to_ret').val().split(' ');
+        var _code = code.replace('0x', '');
+        //var _code = hex($('.modal-param-instrcode').find('.select-instr-index-code').val());
+        if (['0x00', '0x01'].indexOf(code) != -1) {
+            // 00 顺序执行
+            // 01 分支执行
+            params = '00 00 00 00 00 00';
+            var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
+            $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
+        }
+        else if (code == '0x02') {
+            // 02 进入城市建筑
+            params = '00 00 00 00 00 00';
+            var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
+            $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
+        }
+        else if (code == '0x03') {
+            // 03 对话
+            var cur_select = code_hex([cur_code_arr[2], cur_code_arr[3]].join(' '), 1).replace(' ', '');
+            var avatar_id = dec(cur_select);
+            $('.modal-param-instrsub').append('<label>角色</label>');
+            $('.modal-param-instrsub').append(select_avatar(0, avatar_id));
+            $('.modal-param-instrsub').find('.form-control').unbind().on('change', function () {
+                var avatar_code = hex_code(hex($('.modal-param-instrsub').find('.select-avatar-0').val()), 2, 1);
+                params = avatar_code + ' 00 00 00 00';
+                var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
+                $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
+            });
+        }
+        else if (code == '0x04') {
+            // 04 单挑
+            var cur_select = code_hex([cur_code_arr[2], cur_code_arr[3]].join(' '), 1).replace(' ', '');
+            var avatar_id1 = dec(cur_select);
+            var cur_select = code_hex([cur_code_arr[4], cur_code_arr[5]].join(' '), 1).replace(' ', '');
+            var avatar_id2 = dec(cur_select);
+            $('.modal-param-instrsub').append('<label>角色1</label>');
+            $('.modal-param-instrsub').append(select_avatar(0, avatar_id1));
+            $('.modal-param-instrsub').append('<label>角色2</label>');
+            $('.modal-param-instrsub').append(select_avatar(1, avatar_id2));
+            $('.modal-param-instrsub').find('.form-control').unbind().on('change', function () {
+                var avatar_code1 = hex_code(hex($('.modal-param-instrsub').find('.select-avatar-0').val()), 2, 1);
+                var avatar_code2 = hex_code(hex($('.modal-param-instrsub').find('.select-avatar-1').val()), 2, 1);
+                params = avatar_code1 + ' ' + avatar_code2 + ' 00 00';
+                var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
+                $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
+            });
+        }
+        else if (code == '0x05') {
+            // 05 进入城市
+            params = '00 00 00 00 00 00';
+            var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
+            $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
+        }
+        else if (code == '0x06') {
+            // 06 战场移到点
+            var cur_select = code_hex([cur_code_arr[2], cur_code_arr[3]].join(' '), 1).replace(' ', '');
+            var avatar_id = dec(cur_select);
+            $('.modal-param-instrsub').append('<label>角色</label>');
+            $('.modal-param-instrsub').append(select_avatar(0, avatar_id));
+            $('.modal-param-instrsub').append('<label>X</label>');
+            $('.modal-param-instrsub').append(select_custom('x', gen_number_options(100), dec(cur_code_arr[4])));
+            $('.modal-param-instrsub').append('<label>Y</label>');
+            $('.modal-param-instrsub').append(select_custom('y', gen_number_options(100), dec(cur_code_arr[5])));
+            $('.modal-param-instrsub').find('.form-control').unbind().on('change', function () {
+                var avatar_code = hex_code(hex($('.modal-param-instrsub').find('.select-avatar-0').val()), 2, 1);
+                var x = hex($('.modal-param-instrsub').find('.select-x').val());
+                var y = hex($('.modal-param-instrsub').find('.select-y').val());
+                params = avatar_code + ' ' + x + ' ' + y + ' 00 00';
+                var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
+                $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
+            });
+        }
+        else if (code == '0x07') {
+            // 07 战斗胜利
+            params = '00 00 00 00 00 00';
+            var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
+            $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
+        }
+        else if (code == '0x08') {
+            // 08 战斗失败
+            params = '00 00 00 00 00 00';
+            var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
+            $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
+        }
+        else if (code == '0x09') {
+            // 09 指定回合
+            $('.modal-param-instrsub').append('<label>回合</label>');
+            $('.modal-param-instrsub').append(select_custom('round', gen_number_options(100), dec(cur_code_arr[2])));
+            $('.modal-param-instrsub').find('.form-control').unbind().on('change', function () {
+                var round = hex($('.modal-param-instrsub').find('.select-round').val());
+                params = round + ' 00 00 00 00 00';
+                var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
+                $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
+            });
+        }
+        else if (code == '0x0a') {
+            // 0a 未知
+            params = '00 00 00 00 00 00';
+            var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
+            $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
+        }
+        else if (code == '0x0b') {
+            // 0b 战场移到区域
+            var cur_select = code_hex([cur_code_arr[2], cur_code_arr[3]].join(' '), 1).replace(' ', '');
+            var avatar_id = dec(cur_select);
+            $('.modal-param-instrsub').append('<label>角色</label>');
+            $('.modal-param-instrsub').append(select_avatar(0, avatar_id));
+            $('.modal-param-instrsub').append('<label>左上X</label>');
+            $('.modal-param-instrsub').append(select_custom('x0', gen_number_options(100), dec(cur_code_arr[4])));
+            $('.modal-param-instrsub').append('<label>左上Y</label>');
+            $('.modal-param-instrsub').append(select_custom('y0', gen_number_options(100), dec(cur_code_arr[5])));
+            $('.modal-param-instrsub').append('<label>右下X</label>');
+            $('.modal-param-instrsub').append(select_custom('x1', gen_number_options(100), dec(cur_code_arr[6])));
+            $('.modal-param-instrsub').append('<label>右下Y</label>');
+            $('.modal-param-instrsub').append(select_custom('y1', gen_number_options(100), dec(cur_code_arr[7])));
+            $('.modal-param-instrsub').find('.form-control').unbind().on('change', function () {
+                var avatar_code = hex_code(hex($('.modal-param-instrsub').find('.select-avatar-0').val()), 2, 1);
+                var x0 = hex($('.modal-param-instrsub').find('.select-x0').val());
+                var y0 = hex($('.modal-param-instrsub').find('.select-y0').val());
+                var x1 = hex($('.modal-param-instrsub').find('.select-x1').val());
+                var y1 = hex($('.modal-param-instrsub').find('.select-y1').val());
+                params = avatar_code + ' ' + x0 + ' ' + y0 + ' ' + x1 + ' ' + y1;
+                var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
+                $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
+            });
+        }
+        else if (code == '0x0c') {
+            // 0c 撤退
+            params = '00 00 00 00 00 00';
+            var sec_num = hex($('.modal-param-instrcode').find('.select-sec-num').val());
+            $('#instr_index_to_ret').val(_code + ' ' + sec_num + ' ' + params + ' 00 00');
+        }
+    }
+    function select_script_code_subitems(code) {
+        $('.modal-param-sub').empty();
+        var cur_code_arr = $('#script_to_ret').val().split(' ');
+        var _code = code.replace('0x', '');
+        if (code == '0x22')
+            $('#ScriptsModal').find('.modal-dialog').width(1600);
+        else if (code == '0x03')
+            $('#ScriptsModal').find('.modal-dialog').width(900);
+        else
+            $('#ScriptsModal').find('.modal-dialog').width(600);
+        if (['0x00', '0x08', '0x0b', '0x0d', '0x0e', '0x25'].indexOf(code) != -1) {
+            // 00 显示带人物头像的系列对话
+            // 08 在屏幕中央显示多行信息
+            // 0b 在画面中心显示信息
+            // 0d 在画面左下角框中显示信息
+            // 0e 在画面中央显示信息
+            // 25 显示决定供选择
+            var cur_select = '0x' + hex_code(code_hex([cur_code_arr[1], cur_code_arr[2]].join(' '), 1), 2).replace(' ', '');
+            var options = [];
+            var page = Number($('#page_id').val());
+            var txt_list = snrm_editor.get()[page]['txt_list'];
+            for (i in txt_list) {
+                var addr = '0x' + hex_code(txt_list[i].addr.replace('0x', ''), 2).replace(' ', '');
+                var code_bin = txt_list[i].code;
+                var name = txt_list[i].name;
+                var txt = txt_list[i].txt;
+                if (code_bin.substring(0, 5) == 'ff ff')
+                    continue;
+                var txt_short = txt.substring(0, 30) + '(共' + txt.length + '字)';
+                if (name != '') {
+                    // 带头像对话
+                    txt_short = '[' + name + ']' + txt_short;
+                    if (code != '0x00')
+                        continue;
+                }
+                else {
+                    // 一般文字
+                    if (code == '0x00')
+                        continue;
+                }
+                options.push({ value: addr, option: addr + ':' + txt_short });
+            }
+            $('.modal-param-sub').append(select_custom('txt', options, cur_select));
+            $('.modal-param-sub').find('.select-txt').unbind().on('change', function () {
+                var _addr = hex_code($(this).val().replace('0x', ''), 2, 1);
+                $('#script_to_ret').val(_code + ' ' + _addr);
+            });
+        }
+        else if (['0x01', '0x0a'].indexOf(code) != -1) {
+            // 01 指定人物在剧情场景的行动
+            // 0a 部署非战斗模式中的人物
+            var cur_select = code_hex([cur_code_arr[1], cur_code_arr[2]].join(' '), 1).replace(' ', '');
+            var avatar_id = dec(cur_select);
+            var avatar = $('<form class="form-inline"><div class="form-group avatar"></div></form>');
+            avatar.find('.avatar').append('<label>角色</label>');
+            avatar.find('.avatar').append(select_avatar(0, avatar_id));
+            avatar.find('.avatar').append('<label>X</label>');
+            avatar.find('.avatar').append(select_custom('x', gen_number_options(100), dec(cur_code_arr[3])));
+            avatar.find('.avatar').append('<label>Y</label>');
+            avatar.find('.avatar').append(select_custom('y', gen_number_options(100), dec(cur_code_arr[4])));
+            avatar.find('.avatar').append('<label>朝向</label>');
+            avatar.find('.avatar').append(select_custom('direction', gen_number_options(4), dec(cur_code_arr[5])));
+            $('.modal-param-sub').append(avatar);
+            $('.modal-param-sub').find('.avatar').unbind().on('change', function () {
+                var avatar_code = hex_code(hex($(this).find('.select-avatar-0').val()), 2, 1);
+                var x_code = hex_code(hex($(this).find('.select-x').val()), 1);
+                var y_code = hex_code(hex($(this).find('.select-y').val()), 1);
+                var direction_code = hex_code(hex($(this).find('.select-direction').val()), 1);
+                $('#script_to_ret').val(_code + ' ' + avatar_code + ' ' + x_code + ' ' + y_code + ' ' + direction_code);
+            });
+        }
+        else if (code == '0x03') {
+            // 03 部署我军部队
+            select_friend_army();
+        }
+        else if (['0x05', '0x12', '0x13', '0x23', '0x29', '0x31',
+            '0x33', '0x34', '0x36', '0xff'].indexOf(code) != -1) {
+            $('#script_to_ret').val(_code);
+        }
+        else if (code == '0x07') {
+            // 07 显示图片
+            var cur_select = '0x' + hex_code(code_hex([cur_code_arr[1], cur_code_arr[2]].join(' '), 1), 2).replace(' ', '');
+            var options = [];
+            for (var i = 0; i < 288; i++) {
+                var pic_id = '0x' + hex_code(hex(i), 2).replace(' ', '');
+                options.push({ value: pic_id, option: '图片' + pic_id });
+            }
+            $('.modal-param-sub').append(select_custom('pic', options, cur_select));
+            $('.modal-param-sub').find('.select-pic').unbind().on('change', function () {
+                var value = hex_code($(this).val().replace('0x', ''), 2, 1);
+                $('#script_to_ret').val(_code + ' ' + value);
+            });
+        }
+        else if (code == '0x09') {
+            // 09 指定战场/场景/大地图
+        }
+        else if (code == '0x0f') {
+            // 0f 重新读入本章本节某段剧本指令
+        }
+        else if (code == '0x10') {
+            // 10 武将单挑
+            var cur_select = code_hex([cur_code_arr[1], cur_code_arr[2]].join(' '), 1).replace(' ', '');
+            var avatar_id1 = dec(cur_select);
+            var cur_select = code_hex([cur_code_arr[3], cur_code_arr[4]].join(' '), 1).replace(' ', '');
+            var avatar_id2 = dec(cur_select);
+            $('.modal-param-sub').append('<label>角色1</label>');
+            $('.modal-param-sub').append(select_avatar(0, avatar_id1));
+            $('.modal-param-sub').append('<label>角色2</label>');
+            $('.modal-param-sub').append(select_avatar(1, avatar_id2));
+            $('.modal-param-sub').find('.form-control').unbind().on('change', function () {
+                var avatar_code1 = hex_code(hex($('.modal-param-sub').find('.select-avatar-0').val()), 2, 1);
+                var avatar_code2 = hex_code(hex($('.modal-param-sub').find('.select-avatar-1').val()), 2, 1);
+                $('#script_to_ret').val(_code + ' ' + avatar_code1 + ' ' + avatar_code2);
+            });
+        }
+        else if (code == '0x11') {
+            // 11 切换到地图/场景/战场
+        }
+        else if (code == '0x14') {
+            // 14 设置事件开关
+            $('.modal-param-sub').append(select_custom('event', gen_number_options(256), dec(cur_code_arr[1])));
+            $('.modal-param-sub').append(select_custom('switch', gen_number_options(2), dec(cur_code_arr[2])));
+            $('.modal-param-sub').find('.form-control').unbind().on('change', function () {
+                var event = hex($('.modal-param-sub').find('.select-event').val());
+                var eswitch = hex($('.modal-param-sub').find('.select-switch').val());
+                $('#script_to_ret').val(_code + ' ' + event + ' ' + eswitch);
+            });
+        }
+        else if (code == '0x15') {
+            // 15 是否出战的对话框显示
+        }
+        else if (code == '0x17') {
+            // 17 剧情模式开关
+            var cur_select = '0x' + cur_code_arr[1];
+            var options = [
+                { value: '0x01', option: '剧情 开' },
+                { value: '0x00', option: '剧情 关' },
+            ];
+            $('.modal-param-sub').append(select_custom('scenario', options, cur_select));
+            $('.modal-param-sub').find('.select-scenario').unbind().on('change', function () {
+                var value = $(this).val().replace('0x', '');
+                $('#script_to_ret').val(_code + ' ' + value);
+            });
+        }
+        else if (['0x18', '0x1a'].indexOf(code) != -1) {
+            // 18 人物消失、部队撤退
+            // 1a 援军出现
+            var cur_select = code_hex([cur_code_arr[1], cur_code_arr[2]].join(' '), 1).replace(' ', '');
+            var avatar_id = dec(cur_select);
+            $('.modal-param-sub').append('<label>角色</label>');
+            $('.modal-param-sub').append(select_avatar(0, avatar_id));
+            $('.modal-param-sub').find('.form-control').unbind().on('change', function () {
+                var avatar_code = hex_code(hex($('.modal-param-sub').find('.select-avatar-0').val()), 2, 1);
+                $('#script_to_ret').val(_code + ' ' + avatar_code);
+            });
+        }
+        else if (code == '0x1b') {
+            // 1b 获得道具
+            $('.modal-param-sub').append('<label>道具</label>');
+            $('.modal-param-sub').append(select_custom('daoju', daoju_options, dec(cur_code_arr[1])));
+            $('.modal-param-sub').find('.form-control').unbind().on('change', function () {
+                var daoju_code = hex($('.modal-param-sub').find('.select-daoju').val());
+                $('#script_to_ret').val(_code + ' ' + daoju_code);
+            });
+        }
+        else if (code == '0x1c') {
+            // 1c 改变人物AI
+            var cur_select = code_hex([cur_code_arr[1], cur_code_arr[2]].join(' '), 1).replace(' ', '');
+            var avatar_id = dec(cur_select);
+            $('.modal-param-sub').append('<label>角色</label>');
+            $('.modal-param-sub').append(select_avatar(0, avatar_id));
+            $('.modal-param-sub').append('<label>AI类型</label>');
+            $('.modal-param-sub').append(select_custom('ai-type', gen_number_options(8), dec(cur_code_arr[3])));
+            $('.modal-param-sub').append('<label>AI目标X</label>');
+            $('.modal-param-sub').append(select_custom('ai-target-x', gen_number_options(100), dec(cur_code_arr[4])));
+            $('.modal-param-sub').append('<label>AI目标Y</label>');
+            $('.modal-param-sub').append(select_custom('ai-target-y', gen_number_options(100), dec(cur_code_arr[5])));
+            $('.modal-param-sub').find('.form-control').unbind().on('change', function () {
+                var avatar_code = hex_code(hex($('.modal-param-sub').find('.select-avatar-0').val()), 2, 1);
+                var ai_type = hex($('.modal-param-sub').find('.select-ai-type').val());
+                var ai_x = hex($('.modal-param-sub').find('.select-ai-target-x').val());
+                var ai_y = hex($('.modal-param-sub').find('.select-ai-target-y').val());
+                $('#script_to_ret').val(_code + ' ' + avatar_code + ' ' + ai_type + ' ' + ai_x + ' ' + ai_y);
+            });
+        }
+        else if (code == '0x20') {
+            // 20 子指令数目
+        }
+        else if (code == '0x21') {
+            // 21 检查事件是否触发
+            check_events(cur_code_arr);
+        }
+        else if (code == '0x22') {
+            // 22 部署敌军
+            select_opp_army();
+        }
+        else if (['0x24', '0x28'].indexOf(code) != -1) {
+            // 24 修改武将阵营
+            // 28 战场改变武将阵营
+            var cur_select = code_hex([cur_code_arr[1], cur_code_arr[2]].join(' '), 1).replace(' ', '');
+            var avatar_id = dec(cur_select);
+            $('.modal-param-sub').append('<label>角色</label>');
+            $('.modal-param-sub').append(select_avatar(0, avatar_id));
+            $('.modal-param-sub').append('<label>属军</label>');
+            $('.modal-param-sub').append(select_custom('juntuan', juntuan_options, dec(cur_code_arr[3])));
+            $('.modal-param-sub').find('.form-control').unbind().on('change', function () {
+                var avatar_code = hex_code(hex($('.modal-param-sub').find('.select-avatar-0').val()), 2, 1);
+                var juntuan = hex($('.modal-param-sub').find('.select-juntuan').val());
+                $('#script_to_ret').val(_code + ' ' + avatar_code + ' ' + juntuan);
+            });
+        }
+        else if (code == '0x26') {
+            // 26 改变战场地形
+            $('.modal-param-sub').append('<label>X</label>');
+            $('.modal-param-sub').append(select_custom('x', gen_number_options(100), dec(cur_code_arr[1])));
+            $('.modal-param-sub').append('<label>Y</label>');
+            $('.modal-param-sub').append(select_custom('y', gen_number_options(100), dec(cur_code_arr[2])));
+            $('.modal-param-sub').append('<label>地形</label>');
+            var ground_options = [
+                { value: 0, option: '0x00:未知' },
+                { value: 1, option: '0x01:吊桥' },
+                { value: 2, option: '0x02:未知' },
+            ];
+            $('.modal-param-sub').append(select_custom('ground', ground_options, dec(cur_code_arr[3])));
+            $('.modal-param-sub').find('.form-control').unbind().on('change', function () {
+                var x = hex($('.modal-param-sub').find('.select-x').val());
+                var y = hex($('.modal-param-sub').find('.select-y').val());
+                var ground = hex($('.modal-param-sub').find('.select-ground').val());
+                $('#script_to_ret').val(_code + ' ' + x + ' ' + y + ' ' + ground);
+            });
+        }
+        else if (code == '0x27') {
+            // 27 放火或放水
+            $('.modal-param-sub').append('<label>X</label>');
+            $('.modal-param-sub').append(select_custom('x', gen_number_options(100), dec(cur_code_arr[1])));
+            $('.modal-param-sub').append('<label>Y</label>');
+            $('.modal-param-sub').append(select_custom('y', gen_number_options(100), dec(cur_code_arr[2])));
+            $('.modal-param-sub').append('<label>操作</label>');
+            var firewater_options = [
+                { value: 0, option: '0x00:放火' },
+                { value: 1, option: '0x01:放水' },
+                { value: 2, option: '0x02:取消' },
+            ];
+            $('.modal-param-sub').append(select_custom('firewater', firewater_options, dec(cur_code_arr[3])));
+            $('.modal-param-sub').find('.form-control').unbind().on('change', function () {
+                var x = hex($('.modal-param-sub').find('.select-x').val());
+                var y = hex($('.modal-param-sub').find('.select-y').val());
+                var firewater = hex($('.modal-param-sub').find('.select-firewater').val());
+                $('#script_to_ret').val(_code + ' ' + x + ' ' + y + ' ' + firewater);
+            });
+        }
+        else if (code == '0x2a') {
+            // 2a 显示游戏结局
+            $('.modal-param-sub').append('<label>结局</label>');
+            var ending_options = [
+                { value: 0, option: '0x00:正常结局' },
+                { value: 1, option: '0x01:与吴国结盟结局' },
+                { value: 2, option: '0x02:关羽死亡结局' },
+                { value: 3, option: '0x03:刘备驾崩结局' },
+            ];
+            $('.modal-param-sub').append(select_custom('ending', ending_options, dec(cur_code_arr[1])));
+            $('.modal-param-sub').find('.form-control').unbind().on('change', function () {
+                var ending = hex($('.modal-param-sub').find('.select-ending').val());
+                $('#script_to_ret').val(_code + ' ' + ending);
+            });
+        }
+        else if (code == '0x2b') {
+            // 2b 给予黄金/残存部队获得经验
+            var cur_select = code_hex([cur_code_arr[2], cur_code_arr[3]].join(' '), 1).replace(' ', '');
+            var value = dec(cur_select);
+            var get_options = [
+                { value: 2, option: '0x02:获得金' },
+                { value: 4, option: '0x04:残存部队获得经验' },
+            ];
+            $('.modal-param-sub').append('<label>类型</label>');
+            $('.modal-param-sub').append(select_custom('get-type', get_options, dec(cur_code_arr[1])));
+            $('.modal-param-sub').append('<label>数量</label>');
+            $('.modal-param-sub').append(select_custom('get-value', gen_number_options(10001), value));
+            $('.modal-param-sub').find('.form-control').unbind().on('change', function () {
+                var get_type = hex($('.modal-param-sub').find('.select-get-type').val());
+                var get_value = hex_code(hex($('.modal-param-sub').find('.select-get-value').val()), 2, 1);
+                $('#script_to_ret').val(_code + ' ' + get_type + ' ' + get_value);
+            });
+        }
+        else if (code == '0x2d') {
+            // 2d 兵力士气减半
+            var target_options = [
+                { value: 0, option: '0x00:我方' },
+                { value: 1, option: '0x01:敌方' },
+            ];
+            var effect_options = [
+                { value: 0, option: '0x00:士气减半' },
+                { value: 1, option: '0x01:兵力减半' },
+            ];
+            $('.modal-param-sub').append('<label>目标</label>');
+            $('.modal-param-sub').append(select_custom('target', target_options, dec(cur_code_arr[1])));
+            $('.modal-param-sub').append('<label>效果</label>');
+            $('.modal-param-sub').append(select_custom('effect', effect_options, dec(cur_code_arr[2])));
+            $('.modal-param-sub').find('.form-control').unbind().on('change', function () {
+                var target = hex($('.modal-param-sub').find('.select-target').val());
+                var effect = hex($('.modal-param-sub').find('.select-effect').val());
+                $('#script_to_ret').val(_code + ' ' + target + ' ' + effect);
+            });
+        }
+        else if (code == '0x2e') {
+            // 2e 切换所在城市
+        }
+        else if (code == '0x2f') {
+            // 2f 修改人物未知属性
+            var cur_select = code_hex([cur_code_arr[1], cur_code_arr[2]].join(' '), 1).replace(' ', '');
+            var avatar_id = dec(cur_select);
+            $('.modal-param-sub').append('<label>角色</label>');
+            $('.modal-param-sub').append(select_avatar(0, avatar_id));
+            $('.modal-param-sub').append('<label>属性</label>');
+            $('.modal-param-sub').append(select_custom('attr', gen_number_options(256), dec(cur_code_arr[3])));
+            $('.modal-param-sub').find('.form-control').unbind().on('change', function () {
+                var avatar_code = hex_code(hex($('.modal-param-sub').find('.select-avatar-0').val()), 2, 1);
+                var attr = hex($('.modal-param-sub').find('.select-attr').val());
+                $('#script_to_ret').val(_code + ' ' + avatar_code + ' ' + attr);
+            });
+        }
+        else if (code == '0x30') {
+            // 30 显示目标（剧情目标或战斗目标）
+        }
+        else if (code == '0x32') {
+            // 32 设置道具屋贩卖物品，废弃指令
+        }
+        else if (code == '0x35') {
+            // 35 单挑动画
+            var cur_select = code_hex([cur_code_arr[1], cur_code_arr[2]].join(' '), 1).replace(' ', '');
+            var avatar_id = dec(cur_select);
+            $('.modal-param-sub').append('<label>角色</label>');
+            $('.modal-param-sub').append(select_avatar(0, avatar_id));
+            $('.modal-param-sub').append('<label>动画</label>');
+            $('.modal-param-sub').append(select_custom('ani', gen_number_options(16), dec(cur_code_arr[3])));
+            $('.modal-param-sub').find('.form-control').unbind().on('change', function () {
+                var avatar_code = hex_code(hex($('.modal-param-sub').find('.select-avatar-0').val()), 2, 1);
+                var ani = hex($('.modal-param-sub').find('.select-ani').val());
+                $('#script_to_ret').val(_code + ' ' + avatar_code + ' ' + ani);
+            });
+        }
+        else if (code == '0x38') {
+            // 38 播放游戏音乐
+            var cur_select = '0x' + cur_code_arr[1];
+            var options = [];
+            for (var i = 0; i < 16; i++)
+                options.push({ value: '0x' + hex(i), option: '音乐 0x' + hex(i) });
+            $('.modal-param-sub').append(select_custom('music', options, cur_select));
+            $('.modal-param-sub').find('.select-music').unbind().on('change', function () {
+                var value = $(this).val().replace('0x', '');
+                $('#script_to_ret').val(_code + ' ' + value);
+            });
+        }
+        else if (code == '0x39') {
+            // 39 人物等级上升
+            var cur_select = code_hex([cur_code_arr[1], cur_code_arr[2]].join(' '), 1).replace(' ', '');
+            var avatar_id = dec(cur_select);
+            $('.modal-param-sub').append('<label>角色</label>');
+            $('.modal-param-sub').append(select_avatar(0, avatar_id));
+            $('.modal-param-sub').append('<label>上升等级</label>');
+            $('.modal-param-sub').append(select_custom('level', gen_number_options(100), dec(cur_code_arr[3])));
+            $('.modal-param-sub').find('.form-control').unbind().on('change', function () {
+                var avatar_code = hex_code(hex($('.modal-param-sub').find('.select-avatar-0').val()), 2, 1);
+                var level = hex($('.modal-param-sub').find('.select-level').val());
+                $('#script_to_ret').val(_code + ' ' + avatar_code + ' ' + level);
+            });
+        }
+        else if (code == '0x3a') {
+            // 3a 改变人物兵种
+        }
+        else if (code == '0x3b') {
+            // 3b 重新定位场景位置
+        }
+        else if (code == '0x3c') {
+            // 3c 定位军团
+        }
+        else if (code == '0x3d') {
+            // 3d 一般存盘/战场存盘
+        }
+        $('#script_to_ret').val($('#script_to_ret').val() + ' [说明]');
+    }
+    function input_text() {
+        var dom = '<input type="text" class="form-control input-text">';
+        return $(dom);
+    }
+    function set_modal(field) {
+        $('.modal-param-code').empty();
+        $('.modal-param-sub').empty();
+        if (field == 'name') {
+            var cur_avatar_name = dec($('#script_to_ret').val().split(':')[0].replace('0x', ''));
+            $('.modal-param-code').append(select_avatar(0, cur_avatar_name));
+            $('.modal-param-code').find('.select-avatar-0').unbind().on('change', function () {
+                var avatar_id = $('.modal-param-code').find('.select-avatar-0').val();
+                if (avatar_id == 0xffff || avatar_id == 0x0400)
+                    $('#script_to_ret').val('');
+                else {
+                    var name = '0x' + hex(avatar_id) + ':' + avatar_list[avatar_id].name;
+                    $('#script_to_ret').val(name);
+                }
+            });
+        }
+        if (field == 'txt') {
+            $('.modal-param-code').append(input_text());
+            $('.modal-param-code').find('.input-text').val($('#script_to_ret').val()).unbind().on('change', function () {
+                var txt = $(this).val();
+                $('#script_to_ret').val(txt);
+            });
+        }
+        if (field == 'script_list') {
+            $('.modal-param-code').append('<label>指令</label>');
+            $('.modal-param-code').append(select_script_code());
+            var code = '0x' + $('#script_to_ret').val().split(' ')[0];
+            if (code != '0x')
                 select_script_code_subitems(code);
-        $('.modal-param-code').find('.select-script-code').unbind().on('change', function(){
-            if($(this).val() != '0')
-                select_script_code_subitems($(this).val());
-        });
-    }
-    if(field == 'instr_index_code')
-    {
-        var code = '0x' + $('#instr_index_to_ret').val().split(' ')[0];
-        var sec_num = $('#instr_index_to_ret').val().split(' ')[1];
-        $('.modal-param-instrcode').empty();
-        $('.modal-param-instrcode').append('<label>指令组</label>');
-        $('.modal-param-instrcode').append(select_instr_index_code());
-        $('.modal-param-instrcode').append('<label>段号</label>');
-        $('.modal-param-instrcode').append(select_custom('sec-num', gen_number_options(256), dec(sec_num)));
-        var code = $('.modal-param-instrcode').find('.select-instr-index-code').val();
-        select_instr_index_code_subitems(code);
-        $('.modal-param-instrcode').find('.form-control').unbind().on('change', function(){
+            $('.modal-param-code').find('.select-script-code').unbind().on('change', function () {
+                if ($(this).val() != '0')
+                    select_script_code_subitems($(this).val());
+            });
+        }
+        if (field == 'instr_index_code') {
+            var code = '0x' + $('#instr_index_to_ret').val().split(' ')[0];
+            var sec_num = $('#instr_index_to_ret').val().split(' ')[1];
+            $('.modal-param-instrcode').empty();
+            $('.modal-param-instrcode').append('<label>指令组</label>');
+            $('.modal-param-instrcode').append(select_instr_index_code());
+            $('.modal-param-instrcode').append('<label>段号</label>');
+            $('.modal-param-instrcode').append(select_custom('sec-num', gen_number_options(256), dec(sec_num)));
             var code = $('.modal-param-instrcode').find('.select-instr-index-code').val();
             select_instr_index_code_subitems(code);
+            $('.modal-param-instrcode').find('.form-control').unbind().on('change', function () {
+                var code = $('.modal-param-instrcode').find('.select-instr-index-code').val();
+                select_instr_index_code_subitems(code);
+            });
+        }
+    }
+    function update_snrm_code() {
+        if (obj_cur_edit.parents().prev().prev().children().eq(0)[0].innerText == 'name') {
+            name_obj = obj_cur_edit;
+            txt_obj = name_obj.parents().parents().parents().parents().parents().parents().
+                next().children().eq(2).children().eq(0).children().eq(0).children().eq(0).
+                children().eq(3).children().eq(0);
+        }
+        else if (obj_cur_edit.parents().prev().prev().children().eq(0)[0].innerText == 'txt') {
+            txt_obj = obj_cur_edit;
+            name_obj = txt_obj.parents().parents().parents().parents().parents().parents().
+                prev().children().eq(2).children().eq(0).children().eq(0).children().eq(0).
+                children().eq(3).children().eq(0);
+        }
+        else
+            return;
+        var code_obj = null;
+        var upper_level = $(name_obj)
+            .parents().parents().parents().parents().parents().parents();
+        var upper_obj = upper_level;
+        for (var i = 0; i < 4; i++) {
+            upper_obj = upper_obj.prev();
+            var _code_obj = upper_obj.children().eq(2).children().eq(0)
+                .children().eq(0).children().eq(0);
+            if (_code_obj.children().eq(1).children().eq(0)[0].innerText == 'code') {
+                code_obj = _code_obj.children().eq(3).children().eq(0);
+                break;
+            }
+        }
+        var avatar_code = hex_code(name_obj[0].innerText.split(':')[0].replace('0x', ''), 2, 1);
+        var has_avatar = avatar_code != 'ff ff' && avatar_code != '00 40' && name_obj[0].innerText != '';
+        $.get('/trans/' + escape(txt_obj[0].innerText), {}, function (data) {
+            if (Object.keys(data).indexOf('err_ch') != -1)
+                alert('不是BIG5字符：' + unescape(data.err_ch));
+            else {
+                if (has_avatar)
+                    var new_code = avatar_code + ' ' + data.code;
+                else
+                    var new_code = data.code;
+                code_obj[0].innerText = new_code;
+                code_obj.focus();
+                code_obj.blur();
+                relocate_snrm();
+                relocate_snrd();
+            }
         });
     }
-}
-function update_snrm_code()
-{
-    if(obj_cur_edit.parents().prev().prev().children().eq(0)[0].innerText == 'name')
-    {
-        name_obj = obj_cur_edit;
-        txt_obj = name_obj.parents().parents().parents().parents().parents().parents().
-            next().children().eq(2).children().eq(0).children().eq(0).children().eq(0).
-            children().eq(3).children().eq(0);
+    function update_value(val) {
+        obj_cur_edit[0].innerText = val;
+        obj_cur_edit.focus();
+        update_snrm_code();
     }
-    else if(obj_cur_edit.parents().prev().prev().children().eq(0)[0].innerText == 'txt')
-    {
-        txt_obj = obj_cur_edit;
-        name_obj = txt_obj.parents().parents().parents().parents().parents().parents().
-            prev().children().eq(2).children().eq(0).children().eq(0).children().eq(0).
-            children().eq(3).children().eq(0);
-    }
-    else
-        return;
-    var code_obj = null;
-    var upper_level = $(name_obj)
-        .parents().parents().parents().parents().parents().parents();
-    var upper_obj = upper_level;
-    for(var i = 0; i < 4; i++)
-    {
-        upper_obj = upper_obj.prev();
-        var _code_obj = upper_obj.children().eq(2).children().eq(0)
-            .children().eq(0).children().eq(0);
-        if(_code_obj.children().eq(1).children().eq(0)[0].innerText == 'code')
-        {
-            code_obj = _code_obj.children().eq(3).children().eq(0);
-            break;
-        }
-    }
-    var avatar_code = hex_code(name_obj[0].innerText.split(':')[0].replace('0x', ''), 2, 1);
-    var has_avatar = avatar_code != 'ff ff' && avatar_code != '00 40' && name_obj[0].innerText != '';
-    $.get('/trans/' + escape(txt_obj[0].innerText), {}, function(data){
-        if(Object.keys(data).indexOf('err_ch') != -1)
-            alert('不是BIG5字符：' + unescape(data.err_ch));
-        else
-        {
-            if(has_avatar)
-                var new_code = avatar_code + ' ' + data.code;
-            else
-                var new_code = data.code;
-            code_obj[0].innerText = new_code;
-            code_obj.focus();
-            code_obj.blur();
-            relocate_snrm();
-            relocate_snrd();
-        }
+    $(document).ready(function () {
+        load_resource();
+        $('#sel_snr').val(0);
+        load_snr();
+        $('#nav-scenario-tab').tab('show');
     });
-}
-function update_value(val)
-{
-    obj_cur_edit[0].innerText = val;
-    obj_cur_edit.focus();
-    update_snrm_code();
-}
-$(document).ready(function(){
-    load_resource();
-    $('#sel_snr').val(0);
-    load_snr();
-});
-function postjson(url, requestData, callback_succ)
-{
-    if(!requestData)
-        requestData = {};
-    if(!callback_succ)
-        callback_succ = function(){};
-    var query = {
-        type: 'post',
-        url: url,
-        data: requestData,
-        success: callback_succ,
-        headers: {
-            'Content-Type': 'application/json',
-        }
-    };
-    $.ajax(query);
-}
-function write_snr()
-{
-    var data = {
-        'snrm': snrm_editor.get(),
-        'snrd': snrd_editor.get(),
-    };
-    var n = $('#sel_snr').val();
-    postjson('/write_snr/' + n, JSON.stringify(data), function(){});
-}
-function relocate_snrm()
-{
-    var snrm = snrm_editor.get();
-    for(page in snrm)
-    {
-        var offset = 0;
-        for(i in snrm[page].txt_list)
-        {
-            snrm[page].txt_list[i].new_addr = '0x' + hex_code(hex(offset), 2).replace(' ', '');
-            var code_strip = snrm[page].txt_list[i].code.replace(/ $/, '');
-            var len = code_strip.split(' ').length;
-            if(code_strip != 'ff ff')
-                len += 1;
-            offset += len;
-        }
+    function postjson(url, requestData, callback_succ) {
+        if (!requestData)
+            requestData = {};
+        if (!callback_succ)
+            callback_succ = function () { };
+        var query = {
+            type: 'post',
+            url: url,
+            data: requestData,
+            success: callback_succ,
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        };
+        $.ajax(query);
     }
-    snrm_editor.set(snrm);
-    snrm_editor.expandAll();
-}
-function relocate_snrd()
-{
-    var snrd = snrd_editor.get();
-    var snrm = snrm_editor.get();
-    for(page in snrd)
-    {
-        for(paragraph in snrd[page].paragraph_list)
-        {
-            for(section in snrd[page].paragraph_list[paragraph].section_list)
-            {
-                for(i in snrd[page].paragraph_list[paragraph].section_list[section].script_list)
-                {
-                    var script = snrd[page].paragraph_list[paragraph].section_list[section].script_list[i];
-                    var code = script.split(' ');
-                    if(['00', '08', '0b', '0d', '0e', '25'].indexOf(code[0]) != -1)
-                    {
-                        var old_addr = '0x' + code_hex(code.slice(1, 3).join(' '), 1);
-                        var new_addr = '';
-                        for(j in snrm[page].txt_list)
-                        {
-                            if(snrm[page].txt_list[j].addr == old_addr)
-                            {
-                                new_addr = snrm[page].txt_list[j].new_addr;
-                                break;
+    function write_snr() {
+        var data = {
+            'snrm': snrm_editor.get(),
+            'snrd': snrd_editor.get(),
+        };
+        var n = $('#sel_snr').val();
+        postjson('/write_snr/' + n, JSON.stringify(data), function () { });
+    }
+    function relocate_snrm() {
+        var snrm = snrm_editor.get();
+        for (page in snrm) {
+            var offset = 0;
+            for (i in snrm[page].txt_list) {
+                snrm[page].txt_list[i].new_addr = '0x' + hex_code(hex(offset), 2).replace(' ', '');
+                var code_strip = snrm[page].txt_list[i].code.replace(/ $/, '');
+                var len = code_strip.split(' ').length;
+                if (code_strip != 'ff ff')
+                    len += 1;
+                offset += len;
+            }
+        }
+        snrm_editor.set(snrm);
+        snrm_editor.expandAll();
+    }
+    function relocate_snrd() {
+        var snrd = snrd_editor.get();
+        var snrm = snrm_editor.get();
+        for (page in snrd) {
+            for (paragraph in snrd[page].paragraph_list) {
+                for (section in snrd[page].paragraph_list[paragraph].section_list) {
+                    for (i in snrd[page].paragraph_list[paragraph].section_list[section].script_list) {
+                        var script = snrd[page].paragraph_list[paragraph].section_list[section].script_list[i];
+                        var code = script.split(' ');
+                        if (['00', '08', '0b', '0d', '0e', '25'].indexOf(code[0]) != -1) {
+                            var old_addr = '0x' + code_hex(code.slice(1, 3).join(' '), 1);
+                            var new_addr = '';
+                            for (j in snrm[page].txt_list) {
+                                if (snrm[page].txt_list[j].addr == old_addr) {
+                                    new_addr = snrm[page].txt_list[j].new_addr;
+                                    break;
+                                }
                             }
-                        }
-                        if(new_addr != '')
-                        {
-                            addr_code = hex_code(new_addr.replace('0x', ''), 2, 1).split(' ');
-                            code[1] = addr_code[0];
-                            code[2] = addr_code[1];
-                            snrd[page].paragraph_list[paragraph].section_list[section].script_list[i] = code.join(' ');
+                            if (new_addr != '') {
+                                addr_code = hex_code(new_addr.replace('0x', ''), 2, 1).split(' ');
+                                code[1] = addr_code[0];
+                                code[2] = addr_code[1];
+                                snrd[page].paragraph_list[paragraph].section_list[section].script_list[i] = code.join(' ');
+                            }
                         }
                     }
                 }
             }
         }
+        snrd_editor.set(snrd);
+        snrd_editor.expandAll();
+        // new_addr使用完成，把snrm的new_addr替换到addr
+        for (page in snrm) {
+            var offset = 0;
+            for (i in snrm[page].txt_list)
+                snrm[page].txt_list[i].addr = snrm[page].txt_list[i].new_addr;
+        }
+        snrm_editor.set(snrm);
+        snrm_editor.expandAll();
+        enable_modifier();
     }
-    snrd_editor.set(snrd);
-    snrd_editor.expandAll();
-    // new_addr使用完成，把snrm的new_addr替换到addr
-    for(page in snrm)
-    {
-        var offset = 0;
-        for(i in snrm[page].txt_list)
-            snrm[page].txt_list[i].addr = snrm[page].txt_list[i].new_addr;
-    }
-    snrm_editor.set(snrm);
-    snrm_editor.expandAll();
-    enable_modifier();
-}
 </script>
+
 </html>
