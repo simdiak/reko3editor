@@ -36,17 +36,17 @@ yarn start
 ## 一些参考资料
 
 * 分析结果
-  * http://xycq.online/forum/viewthread.php?tid=23414&authoruid=3497
+  * https://xycq.org.cn/forum/viewthread.php?tid=23414&authoruid=3497
 
 * 贼兵必反击补丁
-  * http://xycq.online/forum/viewthread.php?tid=21934&authoruid=3497
+  * https://xycq.org.cn/forum/viewthread.php?tid=21934&authoruid=3497
 
 * LS格式压缩文件解析
-  * http://xycq.online/forum/viewthread.php?tid=34612&authoruid=25461
+  * https://xycq.org.cn/forum/viewthread.php?tid=34612&authoruid=25461
 
 * 剧本初步解析
-  * http://xycq.online/forum/viewthread.php?tid=239493&authoruid=3497
+  * https://xycq.org.cn/forum/viewthread.php?tid=239493&authoruid=3497
 
 * rekoed
-  * http://xycq.online/forum/viewthread.php?tid=244170&authoruid=3497
+  * https://xycq.org.cn/forum/viewthread.php?tid=244170&authoruid=3497
 
